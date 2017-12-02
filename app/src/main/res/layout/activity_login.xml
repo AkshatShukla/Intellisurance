@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout  xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fillViewport="true">
 
-    <ScrollView  xmlns:android="http://schemas.android.com/apk/res/android"
+    <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:fillViewport="true">
@@ -13,86 +13,100 @@
             android:id="@+id/lay123"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:orientation="vertical"
             android:paddingLeft="40dp"
-            android:paddingRight="40dp"
-            android:orientation="vertical">
+            android:paddingRight="40dp">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="40dp"
                 android:text="Sign In"
-                android:textSize="30sp"
-                android:textColor="#565633"/>
-
-            <TextView
-                android:id="@+id/signupBtn"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:textSize="14sp"
-                android:text="Don't Have an account? Create one."
-                android:clickable="true"/>
+                android:textColor="#565633"
+                android:textSize="30sp" />
 
             <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical"
-                android:gravity="center_vertical">
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
-                    android:textColor="#565633"
-                    android:text="Email"/>
+                    android:text="Don't Have an Account? "
+                    android:textSize="14sp"/>
+
+                <TextView
+                    android:id="@+id/signupBtn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:clickable="true"
+                    android:text="Create one."
+                    android:textSize="14sp"
+                    android:textColor="@color/blue"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center_vertical"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="Email"
+                    android:textColor="#565633" />
 
                 <EditText
                     android:id="@+id/emailField"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:inputType="textEmailAddress"/>
+                    android:inputType="textEmailAddress" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
-                    android:textColor="#565633"
-                    android:text="Password"/>
+                    android:text="Password"
+                    android:textColor="#565633" />
 
                 <EditText
                     android:id="@+id/passwordField"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:inputType="textPassword"/>
+                    android:inputType="textPassword" />
 
                 <TextView
                     android:id="@+id/forgotPass"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:clickable="true"
                     android:text="Forgot Password?"
-                    android:textColor="#565633"
-                    android:clickable="true"/>
+                    android:textColor="@color/blue" />
 
                 <RelativeLayout
                     android:id="@+id/rlt_bg_signin"
                     android:layout_width="150dp"
                     android:layout_height="48dp"
                     android:layout_gravity="center_horizontal"
-                    android:layout_marginTop="40dp"
                     android:layout_marginBottom="40dp"
+                    android:layout_marginTop="40dp"
                     android:background="#565633">
 
 
                     <Button
                         android:id="@+id/loginBtn"
-                        android:text="Sign In"
-                        android:textColor="#FFF"
-                        android:background="#000"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:layout_centerInParent="true"
-                        android:clickable="true"/>
+                        android:background="#000"
+                        android:clickable="true"
+                        android:text="Sign In"
+                        android:textColor="#FFF" />
 
 
                 </RelativeLayout>
