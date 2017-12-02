@@ -1,4 +1,4 @@
-package com.example.viteck.viteckchallenge;
+package com.example.viteck.vitechchallenge;
 
 import android.app.Activity;
 import android.content.Context;

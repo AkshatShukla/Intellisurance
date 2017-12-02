@@ -1,4 +1,4 @@
-package com.example.viteck.viteckchallenge;
+package com.example.viteck.vitechchallenge;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;

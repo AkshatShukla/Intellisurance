@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.viteck.viteckchallenge">
+    package="com.example.viteck.vitechchallenge">
 
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
@@ -21,7 +21,7 @@
         <meta-data android:name="com.google.android.maps.v2.API_KEY"
             android:value="AIzaSyBOAMh-8lzZjY-9ng2fLo8rV_lQkfVr_oY" />
 
-        <activity android:name=".MainActivity">
+        <activity android:name="com.example.viteck.vitechchallenge.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -29,7 +29,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".MainIntroActivity"
+            android:name="com.example.viteck.vitechchallenge.MainIntroActivity"
             android:theme="@style/Theme.Intro">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -37,14 +37,14 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-        <activity android:name=".LoginActivity">
+        <activity android:name="com.example.viteck.vitechchallenge.LoginActivity">
         <intent-filter>
             <action android:name="android.intent.action.MAIN" />
 
             <category android:name="android.intent.category.LAUNCHER" />
         </intent-filter>
         </activity>
-        <activity android:name=".PasswordResetActivity"></activity>
+        <activity android:name="com.example.viteck.vitechchallenge.PasswordResetActivity"></activity>
 
     </application>
 
