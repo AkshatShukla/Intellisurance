@@ -24,7 +24,7 @@ public class PageAdapter extends FragmentStatePagerAdapter {
                 MapFragment tab1 = new MapFragment();
                 return tab1;
             case 1:
-                testFragment tab2 = new testFragment();
+                CardFragment tab2 = new CardFragment();
                 return tab2;
             default:
                 return null;
