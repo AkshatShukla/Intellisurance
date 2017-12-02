@@ -1,4 +1,4 @@
-package com.example.viteck.vitechchallenge;
+package com.example.viteck.viteckchallenge;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -24,7 +24,7 @@ public class PageAdapter extends FragmentStatePagerAdapter {
                 MapFragment tab1 = new MapFragment();
                 return tab1;
             case 1:
-                testFragment tab2 = new testFragment();
+                CardFragment tab2 = new CardFragment();
                 return tab2;
             default:
                 return null;

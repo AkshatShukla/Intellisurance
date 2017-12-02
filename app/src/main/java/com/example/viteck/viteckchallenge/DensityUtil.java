@@ -1,4 +1,4 @@
-package com.example.viteck.vitechchallenge;
+package com.example.viteck.viteckchallenge;
 
 /**
  * Created by akshat on 12/2/17.

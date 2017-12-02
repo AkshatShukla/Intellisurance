@@ -1,4 +1,4 @@
-package com.example.viteck.vitechchallenge;
+package com.example.viteck.viteckchallenge;
 
 /**
  * Created by akshat on 12/2/17.
@@ -8,7 +8,6 @@ import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.ButtonBarLayout;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
