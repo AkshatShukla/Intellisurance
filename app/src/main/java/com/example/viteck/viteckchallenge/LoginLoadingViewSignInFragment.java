@@ -1,4 +1,4 @@
-package com.example.viteck.vitechchallenge;
+package com.example.viteck.viteckchallenge;
 
 /**
  * Created by akshat on 12/2/17.
@@ -7,7 +7,6 @@ import android.animation.AnimatorSet;
 import android.animation.ValueAnimator;
 import android.content.Context;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.support.v4.content.ContextCompat;

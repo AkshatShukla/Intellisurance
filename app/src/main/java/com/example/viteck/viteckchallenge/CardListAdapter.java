@@ -1,13 +1,10 @@
-package com.example.viteck.vitechchallenge;
+package com.example.viteck.viteckchallenge;
 
-import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-
-import java.util.AbstractMap;
 
 /**
  * Created by Eric on 12/2/2017.

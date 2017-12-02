@@ -1,25 +1,24 @@
-package com.example.viteck.vitechchallenge;
+package com.example.viteck.viteckchallenge;
 
 import android.app.Activity;
-import android.app.Fragment;
 import android.content.Context;
 import android.os.Bundle;
+import android.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.Spinner;
 
 /**
  * Created by Eric on 12/2/2017.
  */
 
-public class QuestionsFragment1 extends Fragment {
-    private Spinner state;
-    private Spinner city;
-    private EditText income;
-    private Button doneButton;
+public class CardFragment extends Fragment {
+    private static final String TAG = "CardFragment";
+
+    private RecyclerView recycler;
+    private RecyclerView.Adapter adapter;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -29,12 +28,12 @@ public class QuestionsFragment1 extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState){
         super.onCreateView(inflater, container, savedInstanceState);
-        final View rootview = inflater.inflate(R.layout.questions, container, false);
+        final View rootview = inflater.inflate(R.layout.cardlist, container, false);
 
-        state = rootview.findViewById(R.id.personState);
-        city = rootview.findViewById(R.id.personCity);
-        income = rootview.findViewById(R.id.annualIncome);
-        doneButton = rootview.findViewById(R.id.doneButton);
+        recycler = rootview.findViewById(R.id.cardRecycler);
+        adapter = new CardListAdapter(null);
+        recycler.setAdapter(adapter);
+        recycler.setLayoutManager(new LinearLayoutManager(getActivity()));
         return rootview;
     }
 

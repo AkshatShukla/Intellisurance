@@ -2,9 +2,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.viteck.vitechchallenge.testFragment">
+    tools:context="com.example.viteck.viteckchallenge.testFragment">
 
-    <fragment android:name="com.example.viteck.vitechchallenge.CardFragment"
+    <fragment android:name="com.example.viteck.viteckchallenge.CardFragment"
         android:id="@+id/list"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
