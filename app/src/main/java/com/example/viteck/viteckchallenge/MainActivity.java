@@ -1,5 +1,6 @@
 package com.example.viteck.viteckchallenge;
 
+
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
@@ -9,16 +10,8 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-import android.util.Pair;
 import android.view.Menu;
 import android.view.MenuItem;
-
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.util.AbstractMap;
-import java.util.ArrayList;
-import java.util.Map;
-
 public class MainActivity extends AppCompatActivity  implements TabLayout.OnTabSelectedListener {
     private ViewPager viewPager;
 
