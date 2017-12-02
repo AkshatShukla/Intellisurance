@@ -92,6 +92,7 @@ public class LoginActivity extends AppCompatActivity {
         mPasswordField = (EditText) findViewById(R.id.passwordField);
         mLoginBtn = (Button) findViewById(R.id.loginBtn);
         mSignupBtn = (TextView) findViewById(R.id.signupBtn);
+        forgotPass = findViewById(R.id.forgotPass);
 
         mAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
