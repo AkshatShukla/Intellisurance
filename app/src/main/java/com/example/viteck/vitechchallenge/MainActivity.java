@@ -1,11 +1,13 @@
 package com.example.viteck.vitechchallenge;
 
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
+import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.PagerAdapter;
@@ -19,20 +21,27 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import com.google.firebase.auth.FirebaseAuth;
+
 public class MainActivity extends AppCompatActivity  implements TabLayout.OnTabSelectedListener, NavigationView.OnNavigationItemSelectedListener{
     private ViewPager viewPager;
+    private FirebaseAuth mAuth;
+    private DrawerLayout di;
 
+    @SuppressLint("CutPasteId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.nav_drawer);
 
+        di = (DrawerLayout) findViewById(R.id.drawer_layout);
+        mAuth = FirebaseAuth.getInstance();
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tab_layout);
 
-        tabLayout.addTab(tabLayout.newTab().setText("Tab 1"));
-        tabLayout.addTab(tabLayout.newTab().setText("Tab 2"));
+        tabLayout.addTab(tabLayout.newTab().setText("Map View"));
+        tabLayout.addTab(tabLayout.newTab().setText("Recommended Plans"));
         tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
 
         viewPager = (ViewPager) findViewById(R.id.pager);
@@ -64,7 +73,11 @@ public class MainActivity extends AppCompatActivity  implements TabLayout.OnTabS
         if (id == R.id.nav_profile){
             Toast.makeText(this, "Clicked Profile", Toast.LENGTH_SHORT).show();
         } else if (id == R.id.nav_logout) {
-            Toast.makeText(this, "Clicked Logout", Toast.LENGTH_SHORT).show();
+            mAuth.signOut();
+            Snackbar snackbar = Snackbar
+                    .make(di, R.string.sign_out, Snackbar.LENGTH_LONG);
+            snackbar.show();
+            startActivity(new Intent(MainActivity.this, LoginActivity.class));
         }
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
