@@ -3,4 +3,14 @@
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
+
+    <color name="first_slide_background">#242451</color>
+    <color name="first_slide_buttons">#237235</color>
+    <color name="second_slide_background">#332740</color>
+    <color name="second_slide_buttons">#900024</color>
+    <color name="third_slide_background">#000000</color>
+    <color name="third_slide_buttons">#784320</color>
+
+    <color name="black">#000000</color>
+
 </resources>
