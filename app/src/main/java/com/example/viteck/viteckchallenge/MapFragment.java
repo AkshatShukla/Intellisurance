@@ -17,6 +17,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.util.Log;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -47,6 +48,7 @@ import java.io.InputStreamReader;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -114,15 +116,7 @@ public class MapFragment extends android.support.v4.app.Fragment implements OnMa
             e.printStackTrace();
         }
         stateName = addresses.get(0).getAdminArea();
-         thread = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                theMap = processMapLatLng();
-
-            }
-        });
-        thread.run();
-
+        theMap = processMapLatLng(20);
         return mview;
 
     }
@@ -193,12 +187,11 @@ public class MapFragment extends android.support.v4.app.Fragment implements OnMa
 ////             Add a tile overlay to the map, using the heat map tile provider.
 //            mOverlay = map.addTileOverlay(new TileOverlayOptions().tileProvider(mProvider));
 
-            thread.join();
 
             int count = 0;
             for (LatLng latLng : theMap.keySet())
             {
-                if (count == 50)
+                if (count == 20)
                 {
                     break;
                 }
@@ -208,7 +201,7 @@ public class MapFragment extends android.support.v4.app.Fragment implements OnMa
                 mProvider = new HeatmapTileProvider.Builder()
                         .data(list)
                         .radius(50)
-                        .gradient(ALT_HEATMAP_GRADIENT)
+                        .gradient(theMap.get(latLng))
                         .build();
                 // Add a tile overlay to the map, using the heat map tile provider.
                 mOverlay = map.addTileOverlay(new TileOverlayOptions().tileProvider(mProvider));
@@ -227,6 +220,33 @@ public class MapFragment extends android.support.v4.app.Fragment implements OnMa
                 map.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
                 map.addMarker(new MarkerOptions()
                         .position(new LatLng(location.getLatitude(), location.getLongitude())));
+
+//                Thread thread = new Thread(new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        theMap = processMapLatLng(50);
+//                        int count = 0;
+//                        for (LatLng latLng : theMap.keySet())
+//                        {
+//                            if (count == 50)
+//                            {
+//                                break;
+//                            }
+//                            count++;
+//                            List<LatLng> list = new ArrayList<>();
+//                            list.add(latLng);
+//                            mProvider = new HeatmapTileProvider.Builder()
+//                                    .data(list)
+//                                    .radius(10)
+//                                    .gradient(ALT_HEATMAP_GRADIENT)
+//                                    .build();
+//                            // Add a tile overlay to the map, using the heat map tile provider.
+//                            mOverlay = map.addTileOverlay(new TileOverlayOptions().tileProvider(mProvider));
+//                        }
+//
+//                    }
+//                });
+//                thread.run();
 
             }
             else {
@@ -249,7 +269,7 @@ public class MapFragment extends android.support.v4.app.Fragment implements OnMa
         }
     }
 
-    public HashMap<LatLng, Gradient> processMapLatLng()
+    public HashMap<LatLng, Gradient> processMapLatLng(int count)
     {
         HashMap<LatLng, Gradient> locationMap = new HashMap<>();
         try {
@@ -261,7 +281,6 @@ public class MapFragment extends android.support.v4.app.Fragment implements OnMa
                 jsonBuilder.append(line).append("\n");
             }
 
-            //Parse Json
 
             JSONObject jsonObject = new JSONObject(jsonBuilder.toString());
             JSONObject someState = (JSONObject) jsonObject.get(stateName);
@@ -270,7 +289,7 @@ public class MapFragment extends android.support.v4.app.Fragment implements OnMa
             int silversum= 0;
             int goldsum= 0;
             int platinumsum= 0;
-            for (int i = 0; i < cities.length(); i++)
+            for (int i = 0; i < count; i++)
             {
                 JSONObject cityObject = (JSONObject) someState.get((String) cities.get(i));
                 try
@@ -295,7 +314,7 @@ public class MapFragment extends android.support.v4.app.Fragment implements OnMa
 
             if(Geocoder.isPresent()){
                 try {
-                    for (int i = 0; i <= 50; i++) {
+                    for (int i = 0; i <= count; i++) {
                         String c = cities.getString(i);
                         JSONObject cityObject = (JSONObject) someState.get((String) cities.get(i));
                         Geocoder gc = new Geocoder(getContext());
@@ -312,13 +331,38 @@ public class MapFragment extends android.support.v4.app.Fragment implements OnMa
                                 if (a.hasLatitude() && a.hasLongitude()) {
                                     LatLng someLatLng = new LatLng(a.getLatitude(), a.getLongitude());
                                     float[] someStartPoints = {
-                                            silversum/silver, goldsum/gold, bronzesum/bronze,platinumsum/platinum
+                                            (float)silver/silversum, (float)gold/goldsum, (float)bronze/bronzesum,(float)platinum/platinumsum
                                     };
                                     Arrays.sort(someStartPoints);//I am sorting this which is going to put the order of silver,
                                     //gold,bronze, and platinum out of order i can fix this by also sorting the gradient_colors based
                                     //off of a key value pair where i sort the keys where the keys are the start points and the values
                                     //will then be in order!
-                                    Gradient someGradient = new Gradient(ALT_HEATMAP_GRADIENT_COLORS,
+                                    Pair<Float, Integer> testing = new Pair<Float, Integer>( (float) silver/  silversum, Color.rgb(255, 215, 0)); //silver
+                                    Pair<Float, Integer> testing2 = new  Pair<Float, Integer>( (float) gold/  goldsum, Color.rgb(211, 211, 211));//gold
+                                    Pair<Float, Integer> testing3 =  new Pair<Float, Integer>( (float) bronze/  bronzesum, Color.rgb(212, 175, 55));//bronze,
+                                    Pair<Float, Integer> testing4 =  new Pair<Float, Integer>( (float) platinum/  platinumsum, Color.rgb(160, 170, 191));
+                                    ArrayList<Pair<Float, Integer>>  health_gradient = new ArrayList<>();
+                                    health_gradient.add(testing);
+                                    health_gradient.add(testing2);
+                                    health_gradient.add(testing3);
+                                    health_gradient.add(testing4);
+                                    health_gradient.sort(new Comparator<Pair<Float, Integer>>() {
+                                        @Override
+                                        public int compare(Pair<Float, Integer> o1, Pair<Float, Integer> o2) {
+                                            return Float.compare(o1.first,o2.first);
+                                        }
+                                    });
+                                     int[] final_gradient = new int [4];
+
+                                    for (int k = 0; k < health_gradient.size(); k++)
+                                    {
+                                        final_gradient[k]= health_gradient.get(k).second;
+                                    }
+
+
+
+
+                                    Gradient someGradient = new Gradient(final_gradient,
                                             someStartPoints);
                                     locationMap.put(someLatLng, someGradient);
 
@@ -327,7 +371,9 @@ public class MapFragment extends android.support.v4.app.Fragment implements OnMa
                             }
                         }
                         catch (Exception e)
+
                         {
+                            e.printStackTrace();
                             continue;
                         }
 

@@ -242,7 +242,7 @@ public class CardFragment extends Fragment implements ViewTreeObserver.OnGlobalL
         card1.getLocationOnScreen(i);
 
         if (i[1] >= scrollBounds.bottom) {
-            Toast.makeText(getContext(), "TESTING", Toast.LENGTH_SHORT).show();
+//            Toast.makeText(getContext(), "TESTING", Toast.LENGTH_SHORT).show();
 //            scrollView.post(new Runnable() {
 //                @Override
 //                public void run() {
