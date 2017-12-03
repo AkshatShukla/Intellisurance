@@ -3,23 +3,40 @@ package com.example.viteck.viteckchallenge;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.text.InputType;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.ListView;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 
-public class MainActivity extends AppCompatActivity  implements TabLayout.OnTabSelectedListener, NavigationView.OnNavigationItemSelectedListener{
+import java.util.ArrayList;
+
+import ernestoyaquello.com.verticalstepperform.VerticalStepperFormLayout;
+import ernestoyaquello.com.verticalstepperform.interfaces.VerticalStepperForm;
+
+public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSelectedListener, NavigationView.OnNavigationItemSelectedListener {
     private ViewPager viewPager;
     private FirebaseAuth mAuth;
     private DrawerLayout di;
@@ -66,7 +83,7 @@ public class MainActivity extends AppCompatActivity  implements TabLayout.OnTabS
         int id = item.getItemId();
 
         Intent intent;
-        if (id == R.id.nav_profile){
+        if (id == R.id.nav_profile) {
             Toast.makeText(this, "Clicked Profile", Toast.LENGTH_SHORT).show();
         } else if (id == R.id.nav_logout) {
             mAuth.signOut();

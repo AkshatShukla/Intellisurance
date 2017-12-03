@@ -19,7 +19,7 @@ public class CardListAdapter extends RecyclerView.Adapter<CardListAdapter.ViewHo
 
         public ViewHolder(View v) {
             super(v);
-            mImageView = v.findViewById(R.id.cardImage);
+            mImageView = null;//v.findViewById(R.id.cardImage);
         }
     }
 

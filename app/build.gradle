@@ -4,7 +4,7 @@ android {
     compileSdkVersion 26
     defaultConfig {
         applicationId "com.example.viteck.viteckchallenge"
-        minSdkVersion 23
+        minSdkVersion 21
         targetSdkVersion 26
         versionCode 1
         versionName "1.0"
@@ -55,6 +55,7 @@ dependencies {
     apply plugin: 'com.google.gms.google-services'
     implementation 'com.android.support:recyclerview-v7:26.1.0'
     implementation 'com.android.support:cardview-v7:26.1.0'
+    implementation 'com.ernestoyaquello.stepperform:vertical-stepper-form:0.9.9'
     compile 'com.diogobernardino:williamchart:2.5.0'
     compile 'com.github.bmarrdev:android-DecoView-charting:v1.2'
     implementation 'com.github.PhilJay:MPAndroidChart:v3.0.3'
