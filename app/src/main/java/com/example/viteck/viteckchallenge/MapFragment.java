@@ -123,64 +123,64 @@ public class MapFragment extends android.support.v4.app.Fragment implements OnMa
                 map.addMarker(new MarkerOptions()
                         .position(new LatLng(location.getLatitude(), location.getLongitude())));
 
-                Geocoder geocoder = new Geocoder(getContext(), Locale.getDefault());
-                List<Address> addresses = null;
-                try {
-                    addresses = geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                String stateName = addresses.get(0).getAdminArea();
+//                Geocoder geocoder = new Geocoder(getContext(), Locale.getDefault());
+//                List<Address> addresses = null;
+//                try {
+//                    addresses = geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
+//                } catch (IOException e) {
+//                    e.printStackTrace();
+//                }
+//                String stateName = addresses.get(0).getAdminArea();
 
-                //Toast.makeText(getContext(), stateName, Toast.LENGTH_LONG).show();
-                try {
-                    //Load File
-                    //BufferedReader jsonReader = new BufferedReader(new InputStreamReader(this.getResources().openRawResource(R..localjsonfile)));
-                    BufferedReader jsonReader = new BufferedReader(new InputStreamReader(this.getResources().getAssets().open("vitechMap.json")));
-                    StringBuilder jsonBuilder = new StringBuilder();
-                    for (String line = null; (line = jsonReader.readLine()) != null; ) {
-                        jsonBuilder.append(line).append("\n");
-                    }
-
-                    //Parse Json
-
-                    JSONObject jsonObject = new JSONObject(jsonBuilder.toString());
-                    JSONObject someState = (JSONObject) jsonObject.get(stateName);
-                    JSONArray cities = someState.names();
-                    String blh = "";
-
-                    if(Geocoder.isPresent()){
-                        try {
-                            for (int i = 0; i <= cities.length(); i++) {
-                                String c = cities.getString(i);
-                                String loc = "theNameOfTheLocation";
-                                Geocoder gc = new Geocoder(getContext());
-                                List<Address> address = gc.getFromLocationName(c, 5, location.getLatitude(), location.getLongitude(),location.getLatitude(), location.getLongitude()); //
-                                // get the found Address Objects
-
-                                List<LatLng> ll = new ArrayList<LatLng>(address.size()); // A list to save the coordinates if they are available
-                            for (Address a : address) {
-                                if (a.hasLatitude() && a.hasLongitude()) {
-                                    ll.add(new LatLng(a.getLatitude(), a.getLongitude()));
-                                }
-                            }
-                        }
-                        } catch (IOException e) {
-                            // handle the exception
-                        }
-                    }
-                   for (int i=0; i<=cities.length(); i++)
-                   {
-                       JSONObject j = (JSONObject) cities.get(i);
-
-                       String cv ="";
-                   }
-
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+//                //Toast.makeText(getContext(), stateName, Toast.LENGTH_LONG).show();
+//                try {
+//                    //Load File
+//                    //BufferedReader jsonReader = new BufferedReader(new InputStreamReader(this.getResources().openRawResource(R..localjsonfile)));
+//                    BufferedReader jsonReader = new BufferedReader(new InputStreamReader(this.getResources().getAssets().open("vitechMap.json")));
+//                    StringBuilder jsonBuilder = new StringBuilder();
+//                    for (String line = null; (line = jsonReader.readLine()) != null; ) {
+//                        jsonBuilder.append(line).append("\n");
+//                    }
+//
+//                    //Parse Json
+//
+//                    JSONObject jsonObject = new JSONObject(jsonBuilder.toString());
+//                    JSONObject someState = (JSONObject) jsonObject.get(stateName);
+//                    JSONArray cities = someState.names();
+//                    String blh = "";
+//
+//                    if(Geocoder.isPresent()){
+//                        try {
+//                            for (int i = 0; i <= cities.length(); i++) {
+//                                String c = cities.getString(i);
+//                                String loc = "theNameOfTheLocation";
+//                                Geocoder gc = new Geocoder(getContext());
+//                                List<Address> address = gc.getFromLocationName(c, 5, location.getLatitude(), location.getLongitude(),location.getLatitude(), location.getLongitude()); //
+//                                // get the found Address Objects
+//
+//                                List<LatLng> ll = new ArrayList<LatLng>(address.size()); // A list to save the coordinates if they are available
+//                            for (Address a : address) {
+//                                if (a.hasLatitude() && a.hasLongitude()) {
+//                                    ll.add(new LatLng(a.getLatitude(), a.getLongitude()));
+//                                }
+//                            }
+//                        }
+//                        } catch (IOException e) {
+//                            // handle the exception
+//                        }
+//                    }
+//                   for (int i=0; i<=cities.length(); i++)
+//                   {
+//                       JSONObject j = (JSONObject) cities.get(i);
+//
+//                       String cv ="";
+//                   }
+//
+//                } catch (JSONException e) {
+//                    e.printStackTrace();
+//                } catch (IOException e) {
+//                    e.printStackTrace();
+//                }
             }
             else {
                 requestPermissions(

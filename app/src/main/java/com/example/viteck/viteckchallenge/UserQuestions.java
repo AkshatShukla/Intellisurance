@@ -81,8 +81,8 @@ public class UserQuestions extends Activity implements VerticalStepperForm {
         View view = null;
         switch (stepNumber) {
             case 0:
-                Intent i = new Intent(this, MainActivity.class);
-                startActivity(i);
+//                Intent i = new Intent(this, MainActivity.class);
+//                startActivity(i);
                 view = createStateStep();
                 break;
             case 1:
@@ -175,6 +175,7 @@ public class UserQuestions extends Activity implements VerticalStepperForm {
                 break;
             case 13:
                 //Confirmation
+
                 break;
             default:
                 break;
@@ -416,7 +417,12 @@ public class UserQuestions extends Activity implements VerticalStepperForm {
                 String conditionsText = conditionsInput.getText().toString();
                 if(!conditionsText.equals("")){
                     conditionsList.add(conditionsText);
-                    priorConditions.getAdapter().notify();
+                    priorConditions.setAdapter(new ArrayAdapter<String>(view.getContext(), android.R.layout.simple_expandable_list_item_1, conditionsList));
+                    conditionsInput.setText("");
+                    conditionsSpinner.setPromptId(0);
+
+
+
                 }
             }
         });
