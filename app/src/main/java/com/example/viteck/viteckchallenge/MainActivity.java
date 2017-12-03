@@ -86,7 +86,7 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
         if (id == R.id.nav_profile) {
             Toast.makeText(this, "Clicked Profile", Toast.LENGTH_SHORT).show();
             intent = new Intent(this, UserQuestions.class);
-            intent.putExtra("fromMain", true);
+            intent.putExtra("fromMain", "true");
             startActivity(intent);
 
         } else if (id == R.id.nav_logout) {

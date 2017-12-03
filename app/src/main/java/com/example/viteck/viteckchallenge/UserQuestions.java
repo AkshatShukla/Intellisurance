@@ -68,7 +68,7 @@ public class UserQuestions extends Activity implements VerticalStepperForm {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.questions);
         Intent i = this.getIntent();
-        if (i.getExtras().get("fromMain") == true)
+        if ((i.getExtras()!=null) && (i.getExtras().get("fromMain").equals("true")))
         {
             fromMain = true;
              database = FirebaseDatabase.getInstance();
@@ -279,7 +279,7 @@ public class UserQuestions extends Activity implements VerticalStepperForm {
     }
 
     private View createStateStep() {
-        if (fromMain == true)
+        if (fromMain)
         {
             LayoutInflater inflater = LayoutInflater.from(this);
             LinearLayout spinnerLayout = (LinearLayout) inflater.inflate(R.layout.views, null, false);
@@ -298,7 +298,7 @@ public class UserQuestions extends Activity implements VerticalStepperForm {
     }
 
     private View createCityStep() {
-        if (fromMain == true)
+        if (fromMain)
         {
             LayoutInflater inflater = LayoutInflater.from(getBaseContext());
             LinearLayout spinnerLayout = (LinearLayout) inflater.inflate(R.layout.views, null, false);
@@ -521,10 +521,10 @@ public class UserQuestions extends Activity implements VerticalStepperForm {
             String martialstat =  mDatabase.child("Users").child(user).child("maritalstatus").getKey();
             if (martialstat.equals("single"))
             {
-                employment.check(-1);
+                maritialStatus.check(-1);
             }
             else {
-                employment.check(0);
+                maritialStatus.check(0);
             }
         }
         ((ViewGroup) maritialStatus.getParent()).removeView(maritialStatus);
@@ -545,15 +545,17 @@ public class UserQuestions extends Activity implements VerticalStepperForm {
         if (fromMain)
         {
             String user = mAuth.getCurrentUser().getUid();
-            String smoker =  mDatabase.child("Users").child(user).child("smoker").getKey();
-            if (smoker.equals("true"))
+            String smoker1 =  mDatabase.child("Users").child(user).child("smoker").getKey();
+            if (smoker1.equals("true"))
             {
-                RadioButton radioButton = findViewById(R.id.smokerRB);
-                radioButton.setChecked(true);
+                //RadioButton radioButton = findViewById(R.id.smokerRB);
+                //radioButton.setChecked(true);
+                smoker.check(-1);
             }
             else {
-                RadioButton radioButton = findViewById(R.id.nonSmokerRB);
-                radioButton.setChecked(true);
+                //RadioButton radioButton = findViewById(R.id.nonSmokerRB);
+                //radioButton.setChecked(true);
+                smoker.check(0);
             }
         }
         ((ViewGroup) smoker.getParent()).removeView(smoker);
@@ -647,9 +649,7 @@ public class UserQuestions extends Activity implements VerticalStepperForm {
                     conditionsList.add(conditionsText);
                     priorConditions.setAdapter(new ArrayAdapter<String>(view.getContext(), android.R.layout.simple_expandable_list_item_1, conditionsList));
                     conditionsInput.setText("");
-                    conditionsSpinner.setPromptId(0);
-
-
+                    //conditionsSpinner.setPromptId(0);
 
                 }
             }
