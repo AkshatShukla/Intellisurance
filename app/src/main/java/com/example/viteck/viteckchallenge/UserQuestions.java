@@ -257,11 +257,6 @@ public class UserQuestions extends Activity implements VerticalStepperForm, mlRe
 
 
 
-
-
-
-                startActivity(new Intent(this, MainActivity.class));
-
                 break;
             default:
                 break;
@@ -305,6 +300,7 @@ public class UserQuestions extends Activity implements VerticalStepperForm, mlRe
         JSONObject jq = new JSONObject();
 
         try {
+            j.put("STATE", state);
             j.put("ANNUAL_INCOME", income);
             j.put("HEIGHT", height);
             j.put("PEOPLE_COVERED", peopleCovered);
@@ -314,7 +310,7 @@ public class UserQuestions extends Activity implements VerticalStepperForm, mlRe
             j.put("MEDIUM", medium);
             j.put("HIGH", high);
             j.put("AGE", age);
-            j.put("MARITIAL_STATUS", marital_status);
+            j.put("MARITAL_STATUS", marital_status);
             j.put("TOBACCO", tobacco);
             j.put("SEX", sex);
 
@@ -330,9 +326,8 @@ public class UserQuestions extends Activity implements VerticalStepperForm, mlRe
     @Override
     public void handleMlResponse(String s) {
         Intent i = new Intent(this, MainActivity.class);
-        Bundle b = new Bundle();
-        b.putString("MLResponse", s);
-        startActivity(i, b);
+        i.putExtra("MLResponse", s);
+        startActivity(i);
     }
 
     private View createStateStep() {
@@ -375,6 +370,7 @@ public class UserQuestions extends Activity implements VerticalStepperForm, mlRe
             String user = mAuth.getCurrentUser().getUid();
             String someage =  mDatabase.child("Users").child(user).child("age").getKey();
             age.setText(someage);
+            age.setText("1");///////////////////////////////////////////Todo
             ((ViewGroup) age.getParent()).removeView(age);
             age.addTextChangedListener(new TextWatcher() {
                 @Override
@@ -455,6 +451,7 @@ public class UserQuestions extends Activity implements VerticalStepperForm, mlRe
             String user = mAuth.getCurrentUser().getUid();
             String someheight =  mDatabase.child("Users").child(user).child("height").getKey();
             height.setText(someheight);
+            height.setText("23");/////////////////////////////////todo
         }
         ((ViewGroup) height.getParent()).removeView(height);
         height.addTextChangedListener(new TextWatcher() {
@@ -481,6 +478,7 @@ public class UserQuestions extends Activity implements VerticalStepperForm, mlRe
             String user = mAuth.getCurrentUser().getUid();
             String someweight =  mDatabase.child("Users").child(user).child("weight").getKey();
             weight.setText(someweight);
+            weight.setText("234");////////////////////////////////////////todo
         }
         ((ViewGroup) weight.getParent()).removeView(weight);
         weight.addTextChangedListener(new TextWatcher() {
@@ -507,6 +505,7 @@ public class UserQuestions extends Activity implements VerticalStepperForm, mlRe
             String user = mAuth.getCurrentUser().getUid();
             String someincome =  mDatabase.child("Users").child(user).child("income").getKey();
             income.setText(someincome);
+            income.setText("123");//////////////////////////////todo
         }
         ((ViewGroup) income.getParent()).removeView(income);
         income.addTextChangedListener(new TextWatcher() {
@@ -518,7 +517,7 @@ public class UserQuestions extends Activity implements VerticalStepperForm, mlRe
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
                 String incomeString = income.getText().toString();
                 if (!incomeString.startsWith("$")) {
-                    income.setText("$" + incomeString.replace('$', '\u0000'));
+                    income.setText("$" + incomeString.replace("$", ""));
                 }
                 checkIncome();
             }
@@ -617,6 +616,7 @@ public class UserQuestions extends Activity implements VerticalStepperForm, mlRe
             String user = mAuth.getCurrentUser().getUid();
             String optional =  mDatabase.child("Users").child(user).child("optionalinsured").getKey();
             optionallyInsured.setText(optional);
+            optionallyInsured.setText("235");/////////////////////////////////todo
         }
         ((ViewGroup) optionallyInsured.getParent()).removeView(optionallyInsured);
         optionallyInsured.addTextChangedListener(new TextWatcher() {
@@ -628,7 +628,7 @@ public class UserQuestions extends Activity implements VerticalStepperForm, mlRe
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
                 String optString = optionallyInsured.getText().toString();
                 if (!optString.startsWith("$")) {
-                    optionallyInsured.setText("$" + optString.replace('$', '\u0000'));
+                    optionallyInsured.setText("$" + optString.replace("$", ""));
                 }
                 checkOptionallyInsured();
             }
@@ -647,6 +647,7 @@ public class UserQuestions extends Activity implements VerticalStepperForm, mlRe
             String user = mAuth.getCurrentUser().getUid();
             String peopleCov =  mDatabase.child("Users").child(user).child("peoplecovered").getKey();
             peopleCovered.setText(peopleCov);
+            peopleCovered.setText("3");//////////////////////////////////////todo
         }
         ((ViewGroup) peopleCovered.getParent()).removeView(peopleCovered);
         peopleCovered.addTextChangedListener(new TextWatcher() {
@@ -680,8 +681,8 @@ public class UserQuestions extends Activity implements VerticalStepperForm, mlRe
             dbResponse.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
-                    String arrayAsString = dataSnapshot.child("preexisting").getValue().toString();
-                    conditionsList = (ArrayList<String>) Arrays.asList(arrayAsString.replace("[", "").replace("]", "").split(","));
+                    //String arrayAsString = dataSnapshot.child("preexisting").getValue().toString();
+                    //conditionsList = (ArrayList<String>) Arrays.asList(arrayAsString.replace("[", "").replace("]", "").split(","));
                 }
 
                 @Override

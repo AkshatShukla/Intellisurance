@@ -34,6 +34,9 @@ import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 
 import ernestoyaquello.com.verticalstepperform.VerticalStepperFormLayout;
@@ -43,6 +46,7 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
     private ViewPager viewPager;
     private FirebaseAuth mAuth;
     private DrawerLayout di;
+    private JSONObject MLResponse = null;
 
     @SuppressLint("CutPasteId")
     @Override
@@ -63,6 +67,23 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             window.setStatusBarColor(this.getResources().getColor(R.color.colorPrimary));
         }
+        Intent i = getIntent();
+        if(i.hasExtra("MLResponse")){
+            String rawResponse = i.getStringExtra("MLResponse");
+            try {
+                MLResponse = new JSONObject(rawResponse);
+                String s = MLResponse.get("cust_data").toString();
+                JSONObject j = new JSONObject(s);
+                double bronzePrem = j.getDouble("BRONZE_PREMIUM");
+                double silverPrem = j.getDouble("SILVER_PREMIUM");
+                double goldPrem = j.getDouble("GOLD_PREMIUM");
+                double platinumPrem = j.getDouble("PLATINUM_PREMIUM");
+                int cls = j.getInt("CLASS");
+            }catch(JSONException e){
+                e.printStackTrace();
+            }
+        }
+
         di = (DrawerLayout) findViewById(R.id.drawer_layout);
         mAuth = FirebaseAuth.getInstance();
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -101,7 +122,6 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
 
         Intent intent;
         if (id == R.id.nav_profile) {
-            Toast.makeText(this, "Clicked Profile", Toast.LENGTH_SHORT).show();
             intent = new Intent(this, UserQuestions.class);
             intent.putExtra("fromMain", "true");
             startActivity(intent);

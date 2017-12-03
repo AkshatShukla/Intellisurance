@@ -42,6 +42,7 @@ public class sendRequestToML extends AsyncTask<String, Void, String> {
             urlConnection = (HttpURLConnection) url.openConnection();
 
             urlConnection.setRequestMethod("POST");
+            urlConnection.setRequestProperty("Content-Type", "application/json");
             urlConnection.setDoOutput(true);
             OutputStream output = urlConnection.getOutputStream();
             output.write(postBody.getBytes("UTF-8"));
@@ -49,7 +50,8 @@ public class sendRequestToML extends AsyncTask<String, Void, String> {
             output.close();
 
             urlConnection.connect();
-            if (urlConnection.getResponseCode() == HttpURLConnection.HTTP_OK) {
+            int rcode = urlConnection.getResponseCode();
+            if (rcode == HttpURLConnection.HTTP_OK || rcode == HttpURLConnection.HTTP_ACCEPTED || rcode == HttpURLConnection.HTTP_CREATED) {
                 //Get the response message returned by the call
                 InputStream is = urlConnection.getInputStream();
                 ByteArrayOutputStream response = new ByteArrayOutputStream();

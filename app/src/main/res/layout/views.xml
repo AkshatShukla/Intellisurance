@@ -37,7 +37,8 @@
         <Spinner
             android:id="@+id/personCity"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:entries="@array/states"/>
     </LinearLayout>
 
     <LinearLayout
