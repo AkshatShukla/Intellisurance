@@ -48,7 +48,7 @@ public class LoginActivity extends AppCompatActivity {
     LinearLayout li;
 
     private LVBlock mLVBlock;
-    private static int ANIMATION_DELAY = 3000;
+    private static int ANIMATION_DELAY = 0;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -152,6 +152,8 @@ public class LoginActivity extends AppCompatActivity {
             public void onClick(View v) {
 
                 startActivity(new Intent(LoginActivity.this, SignUp.class));
+//                                startActivity(new Intent(LoginActivity.this, MainActivity.class));
+
             }
         });
 

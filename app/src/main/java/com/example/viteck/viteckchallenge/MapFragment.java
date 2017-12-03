@@ -4,6 +4,7 @@ package com.example.viteck.viteckchallenge;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.content.res.AssetManager;
+import android.graphics.Color;
 import android.location.Address;
 import android.location.Criteria;
 import android.location.Geocoder;
@@ -29,6 +30,10 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.TileOverlay;
+import com.google.android.gms.maps.model.TileOverlayOptions;
+import com.google.maps.android.heatmaps.Gradient;
+import com.google.maps.android.heatmaps.HeatmapTileProvider;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -39,7 +44,9 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -55,7 +62,26 @@ public class MapFragment extends android.support.v4.app.Fragment implements OnMa
     private static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 5;
     private GoogleMap map;
     MapView mapView;
+    private String stateName;
     View mview;
+    private static final int ALT_HEATMAP_RADIUS = 10;
+    private static final double ALT_HEATMAP_OPACITY = 0.4;
+    private static final int[] ALT_HEATMAP_GRADIENT_COLORS = {
+            Color.rgb(255, 215, 0), //silver
+            Color.rgb(211, 211, 211),//gold
+            Color.rgb(212, 175, 55)//bronze,
+            ,Color.rgb(160, 170, 191)//platinum
+    };
+
+    public static final float[] ALT_HEATMAP_GRADIENT_START_POINTS = {
+            0.0f, 0.10f, 0.20f,0.30f
+    };
+    public static final Gradient ALT_HEATMAP_GRADIENT = new Gradient(ALT_HEATMAP_GRADIENT_COLORS,
+            ALT_HEATMAP_GRADIENT_START_POINTS);
+    private HeatmapTileProvider mProvider;
+    private TileOverlay mOverlay;
+    HashMap<LatLng, Gradient> theMap = new HashMap<>();
+    Thread thread;
     public MapFragment() {
         // Required empty public constructor
     }
@@ -68,6 +94,35 @@ public class MapFragment extends android.support.v4.app.Fragment implements OnMa
         mview =  inflater.inflate(R.layout.fragment_map, container, false);
 //        SupportMapFragment mapFragment = (SupportMapFragment)getFragmentManager().findFragmentById(R.id.map1);
 //        mapFragment.getMapAsync(this);
+        Location location = null;
+
+        if (ActivityCompat.checkSelfPermission(mview.getContext(), android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED || ActivityCompat.checkSelfPermission(mview.getContext(), android.Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            LocationManager locationManager = (LocationManager) mview.getContext().getSystemService(Context.LOCATION_SERVICE);
+            Criteria criteria = new Criteria();
+            try {
+                String provider = locationManager.getBestProvider(criteria, false);
+                location = locationManager.getLastKnownLocation(provider);
+            } catch (NullPointerException e) {
+                e.printStackTrace();
+            }
+        }
+        Geocoder geocoder = new Geocoder(getContext(), Locale.getDefault());
+        List<Address> addresses = null;
+        try {
+            addresses = geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        stateName = addresses.get(0).getAdminArea();
+         thread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                theMap = processMapLatLng();
+
+            }
+        });
+        thread.run();
+
         return mview;
 
     }
@@ -76,10 +131,13 @@ public class MapFragment extends android.support.v4.app.Fragment implements OnMa
     {
 
         super.onViewCreated(view, savedInstanceState);
+
         mapView = (MapView) mview.findViewById(R.id.map1);
         mapView.onCreate(null);
         mapView.onResume();
         mapView.getMapAsync(this);
+
+
 
 
     }
@@ -90,7 +148,11 @@ public class MapFragment extends android.support.v4.app.Fragment implements OnMa
         MapsInitializer .initialize(getContext());
         map = googleMap;
         map.setMapType(GoogleMap.MAP_TYPE_NORMAL);
-        zoomToLocation();
+        try {
+            zoomToLocation();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
 //        CameraPosition somePosition = CameraPosition.builder().target(new LatLng(41.316324, -72.922343)).zoom(16).bearing(0).tilt(45).build();
 //        map.moveCamera(CameraUpdateFactory.newCameraPosition(somePosition));
 
@@ -98,7 +160,7 @@ public class MapFragment extends android.support.v4.app.Fragment implements OnMa
 
     }
 
-    private void zoomToLocation() {
+    private void zoomToLocation() throws InterruptedException {
         if (ActivityCompat.checkSelfPermission(mview.getContext(), android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED || ActivityCompat.checkSelfPermission(mview.getContext(), android.Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             LocationManager locationManager = (LocationManager) mview.getContext().getSystemService(Context.LOCATION_SERVICE);
             Criteria criteria = new Criteria();
@@ -109,6 +171,49 @@ public class MapFragment extends android.support.v4.app.Fragment implements OnMa
             } catch (NullPointerException e) {
                 return;
             }
+
+
+//            List<LatLng> list = new ArrayList<>();
+//            list.add(new LatLng(41.308274, -72.927884));
+//            mProvider = new HeatmapTileProvider.Builder()
+//                        .data(list)
+//                        .radius(50)
+//                        .gradient(ALT_HEATMAP_GRADIENT)
+//                        .build();
+//                // Add a tile overlay to the map, using the heat map tile provider.
+//                mOverlay = map.addTileOverlay(new TileOverlayOptions().tileProvider(mProvider));
+//
+//            list = new ArrayList<>();
+//            list.add(new LatLng(41.270548, -72.946971));
+//            mProvider = new HeatmapTileProvider.Builder()
+//                    .data(list)
+//                    .radius(50)
+//                    .gradient(ALT_HEATMAP_GRADIENT)
+//                    .build();
+////             Add a tile overlay to the map, using the heat map tile provider.
+//            mOverlay = map.addTileOverlay(new TileOverlayOptions().tileProvider(mProvider));
+
+            thread.join();
+
+            int count = 0;
+            for (LatLng latLng : theMap.keySet())
+            {
+                if (count == 50)
+                {
+                    break;
+                }
+                count++;
+                List<LatLng> list = new ArrayList<>();
+                list.add(latLng);
+                mProvider = new HeatmapTileProvider.Builder()
+                        .data(list)
+                        .radius(50)
+                        .gradient(ALT_HEATMAP_GRADIENT)
+                        .build();
+                // Add a tile overlay to the map, using the heat map tile provider.
+                mOverlay = map.addTileOverlay(new TileOverlayOptions().tileProvider(mProvider));
+            }
+
 
             if (location != null) {
                 map.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(location.getLatitude(), location.getLongitude()), 13));
@@ -123,68 +228,6 @@ public class MapFragment extends android.support.v4.app.Fragment implements OnMa
                 map.addMarker(new MarkerOptions()
                         .position(new LatLng(location.getLatitude(), location.getLongitude())));
 
-//                Geocoder geocoder = new Geocoder(getContext(), Locale.getDefault());
-//                List<Address> addresses = null;
-//                try {
-//                    addresses = geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
-//                } catch (IOException e) {
-//                    e.printStackTrace();
-//                }
-//                String stateName = addresses.get(0).getAdminArea();
-
-                /*
-                //Toast.makeText(getContext(), stateName, Toast.LENGTH_LONG).show();
-                try {
-                    //Load File
-                    //BufferedReader jsonReader = new BufferedReader(new InputStreamReader(this.getResources().openRawResource(R..localjsonfile)));
-                    BufferedReader jsonReader = new BufferedReader(new InputStreamReader(this.getResources().getAssets().open("vitechMap.json")));
-                    StringBuilder jsonBuilder = new StringBuilder();
-                    for (String line = null; (line = jsonReader.readLine()) != null; ) {
-                        jsonBuilder.append(line).append("\n");
-                    }
-
-                    //Parse Json
-
-                    JSONObject jsonObject = new JSONObject(jsonBuilder.toString());
-                    JSONObject someState = (JSONObject) jsonObject.get(stateName);
-                    JSONArray cities = someState.names();
-                    String blh = "";
-
-                    if(Geocoder.isPresent()){
-                        try {
-                            for (int i = 0; i <= cities.length(); i++) {
-                                String c = cities.getString(i);
-                                String loc = "theNameOfTheLocation";
-                                Geocoder gc = new Geocoder(getContext());
-                                List<Address> address = gc.getFromLocationName(c, 5, location.getLatitude(), location.getLongitude(),location.getLatitude(), location.getLongitude()); //
-                                // get the found Address Objects
-
-                                List<LatLng> ll = new ArrayList<LatLng>(address.size()); // A list to save the coordinates if they are available
-                            for (Address a : address) {
-                                if (a.hasLatitude() && a.hasLongitude()) {
-                                    ll.add(new LatLng(a.getLatitude(), a.getLongitude()));
-                                }
-                            }
-                        }
-                        } catch (IOException e) {
-                            // handle the exception
-                        }
-                    }
-                   for (int i=0; i<=cities.length(); i++)
-                   {
-                       JSONObject j = (JSONObject) cities.get(i);
-
-                       String cv ="";
-                   }
-
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-
-                catch (IOException e) {
-                    e.printStackTrace();
-                }
-                */
             }
             else {
                 requestPermissions(
@@ -198,8 +241,113 @@ public class MapFragment extends android.support.v4.app.Fragment implements OnMa
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-            zoomToLocation();
+            try {
+                zoomToLocation();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
+    }
+
+    public HashMap<LatLng, Gradient> processMapLatLng()
+    {
+        HashMap<LatLng, Gradient> locationMap = new HashMap<>();
+        try {
+            //Load File
+            //BufferedReader jsonReader = new BufferedReader(new InputStreamReader(this.getResources().openRawResource(R..localjsonfile)));
+            BufferedReader jsonReader = new BufferedReader(new InputStreamReader(this.getResources().getAssets().open("vitechMap.json")));
+            StringBuilder jsonBuilder = new StringBuilder();
+            for (String line = null; (line = jsonReader.readLine()) != null; ) {
+                jsonBuilder.append(line).append("\n");
+            }
+
+            //Parse Json
+
+            JSONObject jsonObject = new JSONObject(jsonBuilder.toString());
+            JSONObject someState = (JSONObject) jsonObject.get(stateName);
+            JSONArray cities = someState.names();
+            int bronzesum = 0;
+            int silversum= 0;
+            int goldsum= 0;
+            int platinumsum= 0;
+            for (int i = 0; i < cities.length(); i++)
+            {
+                JSONObject cityObject = (JSONObject) someState.get((String) cities.get(i));
+                try
+                {
+                    int bronze = (int) cityObject.get("Bronze");
+                    int silver = (int) cityObject.get("Silver");
+                    int gold = (int) cityObject.get("Gold");
+                    int platinum = (int) cityObject.get("Platinum");
+                    bronzesum+=bronze;
+                    silversum+=silver;
+                    goldsum+=gold;
+                    platinumsum+=platinum;
+                }
+                catch (Exception e)
+                {
+                    continue;
+                }
+
+
+            }
+            String blh = "";
+
+            if(Geocoder.isPresent()){
+                try {
+                    for (int i = 0; i <= 50; i++) {
+                        String c = cities.getString(i);
+                        JSONObject cityObject = (JSONObject) someState.get((String) cities.get(i));
+                        Geocoder gc = new Geocoder(getContext());
+                        List<Address> address = gc.getFromLocationName(c + stateName, 5); //
+                        // get the found Address Objects
+                        try
+                        {
+                            int bronze = (int) cityObject.get("Bronze");
+                            int silver = (int) cityObject.get("Silver");
+                            int gold = (int) cityObject.get("Gold");
+                            int platinum = (int) cityObject.get("Platinum");
+
+                            for (Address a : address) {
+                                if (a.hasLatitude() && a.hasLongitude()) {
+                                    LatLng someLatLng = new LatLng(a.getLatitude(), a.getLongitude());
+                                    float[] someStartPoints = {
+                                            silversum/silver, goldsum/gold, bronzesum/bronze,platinumsum/platinum
+                                    };
+                                    Arrays.sort(someStartPoints);//I am sorting this which is going to put the order of silver,
+                                    //gold,bronze, and platinum out of order i can fix this by also sorting the gradient_colors based
+                                    //off of a key value pair where i sort the keys where the keys are the start points and the values
+                                    //will then be in order!
+                                    Gradient someGradient = new Gradient(ALT_HEATMAP_GRADIENT_COLORS,
+                                            someStartPoints);
+                                    locationMap.put(someLatLng, someGradient);
+
+
+                                }
+                            }
+                        }
+                        catch (Exception e)
+                        {
+                            continue;
+                        }
+
+
+                    }
+                } catch (IOException e) {
+                    // handle the exception
+                }
+            }
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return locationMap;
+
     }
 
 }

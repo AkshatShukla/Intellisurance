@@ -68,7 +68,7 @@ public class UserQuestions extends Activity implements VerticalStepperForm {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.questions);
         Intent i = this.getIntent();
-        if (i.getExtras().get("fromMain") == true)
+        if (i.getExtras().get("fromMain").equals("true"))
         {
             fromMain = true;
              database = FirebaseDatabase.getInstance();
