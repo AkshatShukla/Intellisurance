@@ -85,7 +85,6 @@ public class CardFragment extends Fragment implements ViewTreeObserver.OnGlobalL
                         && card1.getHeight() == rect.height()
                         && card1.getWidth() == rect.width() && !card1DidShow)  {
                     // imageView is within the visible window
-                    Toast.makeText(getContext(), "card1", Toast.LENGTH_SHORT).show();
 
                     card1DidShow = true;
                     card2DidShow = false;
@@ -104,7 +103,6 @@ public class CardFragment extends Fragment implements ViewTreeObserver.OnGlobalL
                         && card2.getHeight() == rect.height()
                         && card2.getWidth() == rect.width() && !card2DidShow)  {
                     // imageView is within the visible window
-                    Toast.makeText(getContext(), "card2", Toast.LENGTH_SHORT).show();
                     card1DidShow = false;
                     card2DidShow = true;
                     card3DidShow = false;
@@ -124,7 +122,6 @@ public class CardFragment extends Fragment implements ViewTreeObserver.OnGlobalL
                         && card3.getHeight() == rect.height()
                         && card3.getWidth() == rect.width() && !card3DidShow)  {
                     // imageView is within the visible window
-                    Toast.makeText(getContext(), "card3", Toast.LENGTH_SHORT).show();
                     card3DidShow = true;
                     card2DidShow = false;
                     card1DidShow = false;
@@ -143,7 +140,6 @@ public class CardFragment extends Fragment implements ViewTreeObserver.OnGlobalL
                         && card4.getHeight() == rect.height()
                         && card4.getWidth() == rect.width() && !card4DidShow)  {
                     // imageView is within the visible window
-                    Toast.makeText(getContext(), "card4", Toast.LENGTH_SHORT).show();
                     card4DidShow = true;
                     card3DidShow = false;
                     card2DidShow = false;

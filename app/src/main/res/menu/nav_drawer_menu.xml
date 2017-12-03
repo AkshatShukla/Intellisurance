@@ -5,11 +5,11 @@
         android:id="@+id/nav_main_group">
         <item
             android:id="@+id/nav_profile"
-            android:icon="@drawable/ic_launcher_background"
+            android:icon="@drawable/circ_profile"
             android:title="Profile" />
         <item
             android:id="@+id/nav_logout"
-            android:icon="@drawable/ic_launcher_background"
+            android:icon="@drawable/power"
             android:title="Log out" />
     </group>
 
