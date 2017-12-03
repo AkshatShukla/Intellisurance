@@ -305,9 +305,9 @@
         <ListView
             android:id="@+id/preexistingConditionsList"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:scrollbars="horizontal" />
+            android:layout_height="match_parent"
+            android:layout_weight="3"
+            android:scrollbars="vertical" />
 
         <ImageButton
             android:id="@+id/submitConditionButton"
