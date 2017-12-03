@@ -4,9 +4,33 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/quot"
+            android:text="Personal Detail"
+            android:layout_marginLeft="10dp"
+            android:textColor="@color/colorPrimaryDark"
+            android:textSize="25dp"
+            android:textStyle="bold"/>
+
+        <TextView
+            android:id="@+id/ques"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/quot"
+            android:layout_marginLeft="10dp"
+            android:text="Questionnaire"
+            android:textColor="@color/colorPrimaryDark"
+            android:textSize="30dp"
+            android:textStyle="italic" />
+
     <ernestoyaquello.com.verticalstepperform.VerticalStepperFormLayout
         android:id="@+id/vertical_stepper_form"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent"
+        android:layout_alignParentStart="true"
+        android:layout_below="@id/quot"
+        android:layout_marginTop="30dp"/>
 
 </RelativeLayout>

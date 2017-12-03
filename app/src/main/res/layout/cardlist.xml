@@ -21,11 +21,11 @@
 
         <include layout="@layout/card"
             android:id="@+id/card1"/>
-        <include layout="@layout/card"
+        <include layout="@layout/gold_plan_card"
             android:id="@+id/card2" />
-        <include layout="@layout/card"
+        <include layout="@layout/silver_plan_card"
             android:id="@+id/card3"/>
-        <include layout="@layout/card"
+        <include layout="@layout/bronze_plan_card"
             android:id="@+id/card4"/>
 
     </LinearLayout>

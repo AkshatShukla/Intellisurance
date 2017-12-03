@@ -52,6 +52,7 @@
         </intent-filter>
         </activity>
         <activity android:name="com.example.viteck.viteckchallenge.PasswordResetActivity"></activity>
+        <activity android:name="com.example.viteck.viteckchallenge.SignUp"></activity>
 
     </application>
 

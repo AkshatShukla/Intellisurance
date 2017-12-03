@@ -52,10 +52,12 @@ public class CardFragment extends Fragment implements ViewTreeObserver.OnGlobalL
         final CardView card2 = rootview.findViewById(R.id.card2);
         final CardView card3 = rootview.findViewById(R.id.card3);
         final CardView card4 = rootview.findViewById(R.id.card4);
-       scrollView = rootview.findViewById(R.id.scrollView);
+        scrollView = rootview.findViewById(R.id.scrollView);
+
+        /*
         DisplayMetrics displayMetrics = new DisplayMetrics();
         getActivity().getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
-        int size = displayMetrics.heightPixels / 2;
+        int size = displayMetrics.heightPixels / 10;
         ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) card1.getLayoutParams();
         params.topMargin = size;
         ViewGroup.MarginLayoutParams params1 = (ViewGroup.MarginLayoutParams) card2.getLayoutParams();
@@ -64,7 +66,7 @@ public class CardFragment extends Fragment implements ViewTreeObserver.OnGlobalL
         params2.topMargin = size;
         ViewGroup.MarginLayoutParams params3 = (ViewGroup.MarginLayoutParams) card4.getLayoutParams();
         params3.topMargin = size;
-
+        */
         scrollView.setOnScrollChangeListener(new View.OnScrollChangeListener() {
             @Override
             public void onScrollChange(View v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {

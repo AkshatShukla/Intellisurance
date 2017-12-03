@@ -132,6 +132,7 @@ public class MapFragment extends android.support.v4.app.Fragment implements OnMa
                 }
                 String stateName = addresses.get(0).getAdminArea();
 
+                /*
                 //Toast.makeText(getContext(), stateName, Toast.LENGTH_LONG).show();
                 try {
                     //Load File
@@ -178,9 +179,12 @@ public class MapFragment extends android.support.v4.app.Fragment implements OnMa
 
                 } catch (JSONException e) {
                     e.printStackTrace();
-                } catch (IOException e) {
+                }
+
+                catch (IOException e) {
                     e.printStackTrace();
                 }
+                */
             }
             else {
                 requestPermissions(
