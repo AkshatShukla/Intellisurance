@@ -59,6 +59,8 @@ dependencies {
     compile 'com.github.bmarrdev:android-DecoView-charting:v1.2'
     implementation 'com.github.PhilJay:MPAndroidChart:v3.0.3'
 
+    compile 'com.github.amirdew:JSON:v1.0.0'
+
 
 }
 
