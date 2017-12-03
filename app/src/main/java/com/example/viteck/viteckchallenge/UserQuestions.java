@@ -16,11 +16,16 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.SimpleAdapter;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
 
@@ -52,14 +57,27 @@ public class UserQuestions extends Activity implements VerticalStepperForm {
     private ImageButton submitConditionsButton;
     private ListView priorConditions;
     private ArrayList<String> conditionsList = new ArrayList<>();
-
+    boolean fromMain = false;
     private Button doneButton;
+    FirebaseAuth mAuth;
+    FirebaseDatabase database;
+    DatabaseReference mDatabase;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.questions);
+        Intent i = this.getIntent();
+        if (i.getExtras().get("fromMain") == true)
+        {
+            fromMain = true;
+             database = FirebaseDatabase.getInstance();
+             mAuth = FirebaseAuth.getInstance();
+             mDatabase = database.getReference();
 
+
+
+        }
         String[] mySteps = {"State", "City", "Age", "Sex", "Height (in)", "Weight (lbs)", "Annual Income", "Employment", "Maritial Status", "Smoker", "Optional Insured", "People Covered", "Preconditions"};
         int colorPrimary = ContextCompat.getColor(getApplicationContext(), R.color.colorPrimary);
         int colorPrimaryDark = ContextCompat.getColor(getApplicationContext(), R.color.colorPrimaryDark);
@@ -175,6 +193,68 @@ public class UserQuestions extends Activity implements VerticalStepperForm {
                 break;
             case 13:
                 //Confirmation
+                //DO FIREBASE HERE AND API CALL HERE.
+                FirebaseDatabase database = FirebaseDatabase.getInstance();
+                FirebaseAuth mAuth = FirebaseAuth.getInstance();
+                DatabaseReference mDatabase = database.getReference();
+                String user = mAuth.getCurrentUser().getUid();
+                mDatabase.child("Users").child(user).child("age").setValue(age.getText().toString());
+                mDatabase.child("Users").child(user).child("state").setValue(state.getSelectedItem().toString());
+                mDatabase.child("Users").child(user).child("city").setValue(city.getSelectedItem().toString());
+                int sexId = sex.getId();
+                if (sexId == -1)
+                {
+                    mDatabase.child("Users").child(user).child("sex").setValue("M");
+                }
+                else
+                {
+                    mDatabase.child("Users").child(user).child("sex").setValue("F");
+                }
+                mDatabase.child("Users").child(user).child("height").setValue(height.getText().toString());
+                mDatabase.child("Users").child(user).child("weight").setValue(weight.getText().toString());
+                mDatabase.child("Users").child(user).child("income").setValue(income.getText().toString());
+                int employementId = employment.getId();
+                if (employementId == -1)
+                {
+                    mDatabase.child("Users").child(user).child("employment").setValue("employed");
+                }
+                else {
+                    mDatabase.child("Users").child(user).child("employment").setValue("unemployed");
+
+                }
+                int martialStat = maritialStatus.getId();
+                if (martialStat == -1)
+                {
+                    mDatabase.child("Users").child(user).child("maritalstatus").setValue("single");
+
+                }
+                else
+                {
+                    mDatabase.child("Users").child(user).child("maritalstatus").setValue("married");
+
+                }
+                int smokerStat = smoker.getId();
+                if (smokerStat == -1)
+                {
+                    mDatabase.child("Users").child(user).child("smoker").setValue("true");
+
+                }
+                else
+                {
+                    mDatabase.child("Users").child(user).child("smoker").setValue("false");
+
+                }
+                mDatabase.child("Users").child(user).child("optionalinsured").setValue(optionallyInsured.getText().toString());
+                mDatabase.child("Users").child(user).child("peoplecovered").setValue(peopleCovered.getText().toString());
+                mDatabase.child("Users").child(user).child("preexisting").setValue(conditionsList.toString());
+
+
+
+
+
+
+                startActivity(new Intent(this, MainActivity.class));
+
                 break;
             default:
                 break;
@@ -199,6 +279,17 @@ public class UserQuestions extends Activity implements VerticalStepperForm {
     }
 
     private View createStateStep() {
+        if (fromMain == true)
+        {
+            LayoutInflater inflater = LayoutInflater.from(this);
+            LinearLayout spinnerLayout = (LinearLayout) inflater.inflate(R.layout.views, null, false);
+            state = spinnerLayout.findViewById(R.id.personState);
+            String user = mAuth.getCurrentUser().getUid();
+            String someState =  mDatabase.child("Users").child(user).child("state").getKey();
+            state.setPrompt(someState);
+            ((ViewGroup) state.getParent()).removeView(state);
+            return state;
+        }
         LayoutInflater inflater = LayoutInflater.from(this);
         LinearLayout spinnerLayout = (LinearLayout) inflater.inflate(R.layout.views, null, false);
         state = spinnerLayout.findViewById(R.id.personState);
@@ -207,6 +298,17 @@ public class UserQuestions extends Activity implements VerticalStepperForm {
     }
 
     private View createCityStep() {
+        if (fromMain == true)
+        {
+            LayoutInflater inflater = LayoutInflater.from(getBaseContext());
+            LinearLayout spinnerLayout = (LinearLayout) inflater.inflate(R.layout.views, null, false);
+            city = spinnerLayout.findViewById(R.id.personState);
+            String user = mAuth.getCurrentUser().getUid();
+            String somecity =  mDatabase.child("Users").child(user).child("city").getKey();
+            city.setPrompt(somecity);
+            ((ViewGroup) city.getParent()).removeView(city);
+            return city;
+        }
         LayoutInflater inflater = LayoutInflater.from(getBaseContext());
         LinearLayout spinnerLayout = (LinearLayout) inflater.inflate(R.layout.views, null, false);
         city = spinnerLayout.findViewById(R.id.personState);
@@ -215,6 +317,26 @@ public class UserQuestions extends Activity implements VerticalStepperForm {
     }
 
     private View createAgeStep() {
+        if(fromMain) {
+            LayoutInflater inflater = LayoutInflater.from(getBaseContext());
+            LinearLayout spinnerLayout = (LinearLayout) inflater.inflate(R.layout.views, null, false);
+            age = spinnerLayout.findViewById(R.id.personAge);
+            String user = mAuth.getCurrentUser().getUid();
+            String someage =  mDatabase.child("Users").child(user).child("age").getKey();
+            age.setText(someage);
+            ((ViewGroup) age.getParent()).removeView(age);
+            age.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+                @Override
+                public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                    checkAge();
+                }
+                @Override
+                public void afterTextChanged(Editable editable) {}
+            });
+            return age;
+        }
         LayoutInflater inflater = LayoutInflater.from(getBaseContext());
         LinearLayout spinnerLayout = (LinearLayout) inflater.inflate(R.layout.views, null, false);
         age = spinnerLayout.findViewById(R.id.personAge);
@@ -233,6 +355,30 @@ public class UserQuestions extends Activity implements VerticalStepperForm {
     }
 
     private View createSexStep() {
+        if (fromMain) {
+            LayoutInflater inflater = LayoutInflater.from(getBaseContext());
+            LinearLayout spinnerLayout = (LinearLayout) inflater.inflate(R.layout.views, null, false);
+            sex = spinnerLayout.findViewById(R.id.genderGroup);
+            String user = mAuth.getCurrentUser().getUid();
+            String somesex =  mDatabase.child("Users").child(user).child("sex").getKey();
+            if (somesex.equals("M"))
+            {
+                sex.check(-1);
+            }
+            else
+            {
+                sex.check(0);
+            }
+            ((ViewGroup) sex.getParent()).removeView(sex);
+            sex.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(RadioGroup radioGroup, int i) {
+                    checkSex();
+                    sex.setOnCheckedChangeListener(null);
+                }
+            });
+            return sex;
+        }
         LayoutInflater inflater = LayoutInflater.from(getBaseContext());
         LinearLayout spinnerLayout = (LinearLayout) inflater.inflate(R.layout.views, null, false);
         sex = spinnerLayout.findViewById(R.id.genderGroup);
@@ -248,6 +394,27 @@ public class UserQuestions extends Activity implements VerticalStepperForm {
     }
 
     private View createHeightStep() {
+        if (fromMain)
+        {
+            LayoutInflater inflater = LayoutInflater.from(getBaseContext());
+            LinearLayout spinnerLayout = (LinearLayout) inflater.inflate(R.layout.views, null, false);
+            height = spinnerLayout.findViewById(R.id.personHeight);
+            ((ViewGroup) height.getParent()).removeView(height);
+            String user = mAuth.getCurrentUser().getUid();
+            String someheight =  mDatabase.child("Users").child(user).child("height").getKey();
+            height.setText(someheight);
+            height.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+                @Override
+                public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                    checkHeight();
+                }
+                @Override
+                public void afterTextChanged(Editable editable) {}
+            });
+            return height;
+        }
         LayoutInflater inflater = LayoutInflater.from(getBaseContext());
         LinearLayout spinnerLayout = (LinearLayout) inflater.inflate(R.layout.views, null, false);
         height = spinnerLayout.findViewById(R.id.personHeight);
@@ -266,9 +433,16 @@ public class UserQuestions extends Activity implements VerticalStepperForm {
     }
 
     private View createWeightStep() {
+
         LayoutInflater inflater = LayoutInflater.from(getBaseContext());
         LinearLayout spinnerLayout = (LinearLayout) inflater.inflate(R.layout.views, null, false);
         weight = spinnerLayout.findViewById(R.id.personWeight);
+        if (fromMain)
+        {
+            String user = mAuth.getCurrentUser().getUid();
+            String someweight =  mDatabase.child("Users").child(user).child("weight").getKey();
+            weight.setText(someweight);
+        }
         ((ViewGroup) weight.getParent()).removeView(weight);
         weight.addTextChangedListener(new TextWatcher() {
             @Override
@@ -287,6 +461,12 @@ public class UserQuestions extends Activity implements VerticalStepperForm {
         LayoutInflater inflater = LayoutInflater.from(getBaseContext());
         LinearLayout spinnerLayout = (LinearLayout) inflater.inflate(R.layout.views, null, false);
         income = spinnerLayout.findViewById(R.id.annualIncome);
+        if (fromMain)
+        {
+            String user = mAuth.getCurrentUser().getUid();
+            String someincome =  mDatabase.child("Users").child(user).child("income").getKey();
+            income.setText(someincome);
+        }
         ((ViewGroup) income.getParent()).removeView(income);
         income.addTextChangedListener(new TextWatcher() {
             @Override
@@ -309,6 +489,18 @@ public class UserQuestions extends Activity implements VerticalStepperForm {
         LayoutInflater inflater = LayoutInflater.from(getBaseContext());
         LinearLayout spinnerLayout = (LinearLayout) inflater.inflate(R.layout.views, null, false);
         employment = spinnerLayout.findViewById(R.id.employementGroup);
+        if (fromMain) {
+            String user = mAuth.getCurrentUser().getUid();
+            String someemployment =  mDatabase.child("Users").child(user).child("employement").getKey();
+            if (someemployment.equals("employed"))
+            {
+                employment.check(-1);
+            }
+            else {
+                employment.check(0);
+            }
+        }
+
         ((ViewGroup) employment.getParent()).removeView(employment);
         employment.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
@@ -324,6 +516,17 @@ public class UserQuestions extends Activity implements VerticalStepperForm {
         LayoutInflater inflater = LayoutInflater.from(getBaseContext());
         LinearLayout spinnerLayout = (LinearLayout) inflater.inflate(R.layout.views, null, false);
         maritialStatus = spinnerLayout.findViewById(R.id.maritialGroup);
+        if (fromMain) {
+            String user = mAuth.getCurrentUser().getUid();
+            String martialstat =  mDatabase.child("Users").child(user).child("maritalstatus").getKey();
+            if (martialstat.equals("single"))
+            {
+                employment.check(-1);
+            }
+            else {
+                employment.check(0);
+            }
+        }
         ((ViewGroup) maritialStatus.getParent()).removeView(maritialStatus);
         maritialStatus.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
@@ -339,6 +542,20 @@ public class UserQuestions extends Activity implements VerticalStepperForm {
         LayoutInflater inflater = LayoutInflater.from(getBaseContext());
         LinearLayout spinnerLayout = (LinearLayout) inflater.inflate(R.layout.views, null, false);
         smoker = spinnerLayout.findViewById(R.id.smokerGroup);
+        if (fromMain)
+        {
+            String user = mAuth.getCurrentUser().getUid();
+            String smoker =  mDatabase.child("Users").child(user).child("smoker").getKey();
+            if (smoker.equals("true"))
+            {
+                RadioButton radioButton = findViewById(R.id.smokerRB);
+                radioButton.setChecked(true);
+            }
+            else {
+                RadioButton radioButton = findViewById(R.id.nonSmokerRB);
+                radioButton.setChecked(true);
+            }
+        }
         ((ViewGroup) smoker.getParent()).removeView(smoker);
         smoker.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
@@ -354,6 +571,12 @@ public class UserQuestions extends Activity implements VerticalStepperForm {
         LayoutInflater inflater = LayoutInflater.from(getBaseContext());
         LinearLayout spinnerLayout = (LinearLayout) inflater.inflate(R.layout.views, null, false);
         optionallyInsured = spinnerLayout.findViewById(R.id.optionallyInsured);
+        if (fromMain)
+        {
+            String user = mAuth.getCurrentUser().getUid();
+            String optional =  mDatabase.child("Users").child(user).child("optionalinsured").getKey();
+            optionallyInsured.setText(optional);
+        }
         ((ViewGroup) optionallyInsured.getParent()).removeView(optionallyInsured);
         optionallyInsured.addTextChangedListener(new TextWatcher() {
             @Override
@@ -376,6 +599,12 @@ public class UserQuestions extends Activity implements VerticalStepperForm {
         LayoutInflater inflater = LayoutInflater.from(getBaseContext());
         LinearLayout spinnerLayout = (LinearLayout) inflater.inflate(R.layout.views, null, false);
         peopleCovered = spinnerLayout.findViewById(R.id.peopleCovered);
+        if (fromMain)
+        {
+            String user = mAuth.getCurrentUser().getUid();
+            String peopleCov =  mDatabase.child("Users").child(user).child("peoplecovered").getKey();
+            peopleCovered.setText(peopleCov);
+        }
         ((ViewGroup) peopleCovered.getParent()).removeView(peopleCovered);
         peopleCovered.addTextChangedListener(new TextWatcher() {
             @Override
@@ -389,7 +618,7 @@ public class UserQuestions extends Activity implements VerticalStepperForm {
         });
         return peopleCovered;
     }
-
+    //what are we doing about this for displaying metrics.
     private View createPreconditionsStep() {
         LayoutInflater inflater = LayoutInflater.from(getBaseContext());
         LinearLayout spinnerLayout = (LinearLayout) inflater.inflate(R.layout.views, null, false);
@@ -416,7 +645,12 @@ public class UserQuestions extends Activity implements VerticalStepperForm {
                 String conditionsText = conditionsInput.getText().toString();
                 if(!conditionsText.equals("")){
                     conditionsList.add(conditionsText);
-                    priorConditions.getAdapter().notify();
+                    priorConditions.setAdapter(new ArrayAdapter<String>(view.getContext(), android.R.layout.simple_expandable_list_item_1, conditionsList));
+                    conditionsInput.setText("");
+                    conditionsSpinner.setPromptId(0);
+
+
+
                 }
             }
         });
