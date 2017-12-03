@@ -81,6 +81,8 @@ public class UserQuestions extends Activity implements VerticalStepperForm {
         View view = null;
         switch (stepNumber) {
             case 0:
+                Intent i = new Intent(this, MainActivity.class);
+                startActivity(i);
                 view = createStateStep();
                 break;
             case 1:
