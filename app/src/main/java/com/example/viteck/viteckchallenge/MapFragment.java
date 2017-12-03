@@ -123,14 +123,14 @@ public class MapFragment extends android.support.v4.app.Fragment implements OnMa
                 map.addMarker(new MarkerOptions()
                         .position(new LatLng(location.getLatitude(), location.getLongitude())));
 
-                Geocoder geocoder = new Geocoder(getContext(), Locale.getDefault());
-                List<Address> addresses = null;
-                try {
-                    addresses = geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                String stateName = addresses.get(0).getAdminArea();
+//                Geocoder geocoder = new Geocoder(getContext(), Locale.getDefault());
+//                List<Address> addresses = null;
+//                try {
+//                    addresses = geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
+//                } catch (IOException e) {
+//                    e.printStackTrace();
+//                }
+//                String stateName = addresses.get(0).getAdminArea();
 
                 /*
                 //Toast.makeText(getContext(), stateName, Toast.LENGTH_LONG).show();

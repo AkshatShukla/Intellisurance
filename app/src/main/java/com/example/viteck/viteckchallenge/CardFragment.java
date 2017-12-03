@@ -86,11 +86,19 @@ public class CardFragment extends Fragment implements ViewTreeObserver.OnGlobalL
                         && card1.getWidth() == rect.width() && !card1DidShow)  {
                     // imageView is within the visible window
                     Toast.makeText(getContext(), "card1", Toast.LENGTH_SHORT).show();
+
                     card1DidShow = true;
                     card2DidShow = false;
                     card3DidShow = false;
                     card4DidShow = false;
+                    card1.setVisibility(View.VISIBLE);
+                    card1.setAlpha(0.0f);
 
+// Start the animation
+                    card1.animate()
+                            .translationY(card1.getHeight()/4)
+                            .alpha(1.0f)
+                            .setListener(null);
                 }
                 if(card2.getGlobalVisibleRect(rect)
                         && card2.getHeight() == rect.height()
@@ -101,6 +109,15 @@ public class CardFragment extends Fragment implements ViewTreeObserver.OnGlobalL
                     card2DidShow = true;
                     card3DidShow = false;
                     card4DidShow = false;
+                    card2.setVisibility(View.VISIBLE);
+                    card2.setAlpha(0.0f);
+
+
+// Start the animation
+                    card2.animate()
+                            .translationYBy(card3.getHeight()/4)
+                            .alpha(1.0f)
+                            .setListener(null);
 
                 }
                 if(card3.getGlobalVisibleRect(rect)
@@ -112,6 +129,15 @@ public class CardFragment extends Fragment implements ViewTreeObserver.OnGlobalL
                     card2DidShow = false;
                     card1DidShow = false;
                     card4DidShow = false;
+                    card3.setVisibility(View.VISIBLE);
+                    card3.setAlpha(0.0f);
+
+
+// Start the animation
+                    card3.animate()
+                            .translationYBy(card3.getHeight()/4)
+                            .alpha(1.0f)
+                            .setListener(null);
                 }
                 if(card4.getGlobalVisibleRect(rect)
                         && card4.getHeight() == rect.height()
@@ -122,6 +148,15 @@ public class CardFragment extends Fragment implements ViewTreeObserver.OnGlobalL
                     card3DidShow = false;
                     card2DidShow = false;
                     card1DidShow = false;
+                    card4.setAlpha(0.0f);
+
+                    card4.setVisibility(View.VISIBLE);
+
+// Start the animation
+                    card4.animate()
+                            .translationY(card4.getHeight()/4)
+                            .alpha(1.0f)
+                            .setListener(null);
                 }
 
 
