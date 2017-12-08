@@ -23,6 +23,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
@@ -55,6 +56,8 @@ import java.util.Locale;
 
 import eu.amirs.JSON;
 
+import static android.content.Context.LOCATION_SERVICE;
+
 
 /**
  * A simple {@link Fragment} subclass.
@@ -84,6 +87,8 @@ public class MapFragment extends android.support.v4.app.Fragment implements OnMa
     private TileOverlay mOverlay;
     HashMap<LatLng, Gradient> theMap = new HashMap<>();
     Thread thread;
+    Location location = null;
+    private int numCities = 50;
     public MapFragment() {
         // Required empty public constructor
     }
@@ -96,18 +101,9 @@ public class MapFragment extends android.support.v4.app.Fragment implements OnMa
         mview =  inflater.inflate(R.layout.fragment_map, container, false);
 //        SupportMapFragment mapFragment = (SupportMapFragment)getFragmentManager().findFragmentById(R.id.map1);
 //        mapFragment.getMapAsync(this);
-        Location location = null;
 
-        if (ActivityCompat.checkSelfPermission(mview.getContext(), android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED || ActivityCompat.checkSelfPermission(mview.getContext(), android.Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-            LocationManager locationManager = (LocationManager) mview.getContext().getSystemService(Context.LOCATION_SERVICE);
-            Criteria criteria = new Criteria();
-            try {
-                String provider = locationManager.getBestProvider(criteria, false);
-                location = locationManager.getLastKnownLocation(provider);
-            } catch (NullPointerException e) {
-                e.printStackTrace();
-            }
-        }
+
+        location = getLastKnownLocation();
         Geocoder geocoder = new Geocoder(getContext(), Locale.getDefault());
         List<Address> addresses = null;
         try {
@@ -116,7 +112,7 @@ public class MapFragment extends android.support.v4.app.Fragment implements OnMa
             e.printStackTrace();
         }
         stateName = addresses.get(0).getAdminArea();
-        theMap = processMapLatLng(50);
+        theMap = processMapLatLng(numCities);
         return mview;
 
     }
@@ -156,42 +152,11 @@ public class MapFragment extends android.support.v4.app.Fragment implements OnMa
 
     private void zoomToLocation() throws InterruptedException {
         if (ActivityCompat.checkSelfPermission(mview.getContext(), android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED || ActivityCompat.checkSelfPermission(mview.getContext(), android.Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-            LocationManager locationManager = (LocationManager) mview.getContext().getSystemService(Context.LOCATION_SERVICE);
-            Criteria criteria = new Criteria();
-            Location location = null;
-            try {
-                String provider = locationManager.getBestProvider(criteria, false);
-                location = locationManager.getLastKnownLocation(provider);
-            } catch (NullPointerException e) {
-                return;
-            }
-
-
-//            List<LatLng> list = new ArrayList<>();
-//            list.add(new LatLng(41.308274, -72.927884));
-//            mProvider = new HeatmapTileProvider.Builder()
-//                        .data(list)
-//                        .radius(50)
-//                        .gradient(ALT_HEATMAP_GRADIENT)
-//                        .build();
-//                // Add a tile overlay to the map, using the heat map tile provider.
-//                mOverlay = map.addTileOverlay(new TileOverlayOptions().tileProvider(mProvider));
-//
-//            list = new ArrayList<>();
-//            list.add(new LatLng(41.270548, -72.946971));
-//            mProvider = new HeatmapTileProvider.Builder()
-//                    .data(list)
-//                    .radius(50)
-//                    .gradient(ALT_HEATMAP_GRADIENT)
-//                    .build();
-////             Add a tile overlay to the map, using the heat map tile provider.
-//            mOverlay = map.addTileOverlay(new TileOverlayOptions().tileProvider(mProvider));
-
 
             int count = 0;
             for (LatLng latLng : theMap.keySet())
             {
-                if (count == 50)
+                if (count == numCities)
                 {
                     break;
                 }
@@ -221,32 +186,6 @@ public class MapFragment extends android.support.v4.app.Fragment implements OnMa
                 map.addMarker(new MarkerOptions()
                         .position(new LatLng(location.getLatitude(), location.getLongitude())));
 
-//                Thread thread = new Thread(new Runnable() {
-//                    @Override
-//                    public void run() {
-//                        theMap = processMapLatLng(50);
-//                        int count = 0;
-//                        for (LatLng latLng : theMap.keySet())
-//                        {
-//                            if (count == 50)
-//                            {
-//                                break;
-//                            }
-//                            count++;
-//                            List<LatLng> list = new ArrayList<>();
-//                            list.add(latLng);
-//                            mProvider = new HeatmapTileProvider.Builder()
-//                                    .data(list)
-//                                    .radius(10)
-//                                    .gradient(ALT_HEATMAP_GRADIENT)
-//                                    .build();
-//                            // Add a tile overlay to the map, using the heat map tile provider.
-//                            mOverlay = map.addTileOverlay(new TileOverlayOptions().tileProvider(mProvider));
-//                        }
-//
-//                    }
-//                });
-//                thread.run();
 
             }
             else {
@@ -330,10 +269,10 @@ public class MapFragment extends android.support.v4.app.Fragment implements OnMa
                             for (Address a : address) {
                                 if (a.hasLatitude() && a.hasLongitude()) {
                                     LatLng someLatLng = new LatLng(a.getLatitude(), a.getLongitude());
-                                    float[] someStartPoints = {
+                                    float[] intensityPoints = {
                                             (float)silver/silversum, (float)gold/goldsum, (float)bronze/bronzesum,(float)platinum/platinumsum
                                     };
-                                    Arrays.sort(someStartPoints);//I am sorting this which is going to put the order of silver,
+                                    Arrays.sort(intensityPoints);//I am sorting this which is going to put the order of silver,
                                     //gold,bronze, and platinum out of order i can fix this by also sorting the gradient_colors based
                                     //off of a key value pair where i sort the keys where the keys are the start points and the values
                                     //will then be in order!
@@ -363,7 +302,7 @@ public class MapFragment extends android.support.v4.app.Fragment implements OnMa
 
 
                                     Gradient someGradient = new Gradient(final_gradient,
-                                            someStartPoints);
+                                            intensityPoints);
                                     locationMap.put(someLatLng, someGradient);
 
 
@@ -395,5 +334,32 @@ public class MapFragment extends android.support.v4.app.Fragment implements OnMa
         return locationMap;
 
     }
+
+    private Location getLastKnownLocation() {
+
+        Location bestLocation = null;
+        if (ActivityCompat.checkSelfPermission(mview.getContext(), android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED || ActivityCompat.checkSelfPermission(mview.getContext(), android.Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            LocationManager mLocationManager = (LocationManager) mview.getContext().getSystemService(LOCATION_SERVICE);
+
+            mLocationManager = (LocationManager) getActivity().getApplicationContext().getSystemService(LOCATION_SERVICE);
+
+            List<String> providers = mLocationManager.getProviders(true);
+            for (String provider : providers) {
+                Location l = mLocationManager.getLastKnownLocation(provider);
+                if (l == null) {
+                    continue;
+                }
+                if (bestLocation == null || l.getAccuracy() < bestLocation.getAccuracy()) {
+                    // Found best last known location: %s", l);
+                    bestLocation = l;
+                }
+            }
+        }
+        return bestLocation;
+
+
+    }
+
+
 
 }

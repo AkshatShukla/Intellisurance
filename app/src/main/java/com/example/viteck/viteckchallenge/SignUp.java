@@ -19,6 +19,7 @@ import android.text.TextUtils;
 import android.transition.ChangeBounds;
 import android.transition.Scene;
 import android.transition.TransitionManager;
+import android.util.Log;
 import android.util.Patterns;
 import android.view.View;
 import android.view.ViewAnimationUtils;
@@ -39,6 +40,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
@@ -187,6 +189,13 @@ public class SignUp extends AppCompatActivity implements View.OnClickListener, A
             }
         });
         TransitionManager.go(mSceneSignUp);
+
+
+
+
+
+
+
     }
 
     private void setSize(int width, int height) {
@@ -345,11 +354,20 @@ public class SignUp extends AppCompatActivity implements View.OnClickListener, A
             anim.start();
 
             //Initializing FireBase Auth object
+
             firebaseAuth = FirebaseAuth.getInstance();
 
-            //final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+//            final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
             //creating a new user in FireBase Auth Database
+//            firebaseAuth.createUserWithEmailAndPassword(email,password).addOnSuccessListener(this, new OnSuccessListener<AuthResult>() {
+//                @Override
+//                public void onSuccess(AuthResult authResult) {
+//                    Toast.makeText(signupcontext, "Succesful signup", Toast.LENGTH_SHORT).show();
+//                }
+//            });
+
+
             firebaseAuth.createUserWithEmailAndPassword(email, password)
                     .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                         @Override
@@ -433,5 +451,10 @@ public class SignUp extends AppCompatActivity implements View.OnClickListener, A
             return Patterns.EMAIL_ADDRESS.matcher(target).matches();
         }
     }
+
+
+
 }
+
+
 

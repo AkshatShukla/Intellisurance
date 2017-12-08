@@ -130,14 +130,16 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
                     double silver_val = (double) dataSnapshot.child("Silver").getValue();
                     double gold_val = (double) dataSnapshot.child("Gold").getValue();
                     double plat_val = (double) dataSnapshot.child("Platinum").getValue();
-                    int classifier = (int) dataSnapshot.child("Class").getValue();
+                    Long classifier = (long) dataSnapshot.child("Class").getValue();
+                    Integer classInt = classifier.intValue();
+
 
                     bundle = new Bundle();
                     bundle.putDouble("bronzePremium", bronze_val);
                     bundle.putDouble("silverPremium", silver_val);
                     bundle.putDouble("goldPremium", gold_val);
                     bundle.putDouble("platinumPremium", plat_val);
-                    bundle.putInt("class", classifier);
+                    bundle.putInt("class", classInt);
 
                     cardFrag.setArguments(bundle);
                     TabLayout tabLayout = (TabLayout) findViewById(R.id.tab_layout);
@@ -151,7 +153,7 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
                             (getSupportFragmentManager(), tabLayout.getTabCount(), cardFrag);
                     viewPager.setAdapter(adapter);
                     tabLayout.setOnTabSelectedListener(MainActivity.this);
-
+                    viewPager.setCurrentItem(0);
                     viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
                 }
 
@@ -167,19 +169,19 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         setTitle("");
-        TabLayout tabLayout = (TabLayout) findViewById(R.id.tab_layout);
+//        TabLayout tabLayout = (TabLayout) findViewById(R.id.tab_layout);
+//
+//        tabLayout.addTab(tabLayout.newTab().setText("Map View"));
+//        tabLayout.addTab(tabLayout.newTab().setText("Recommended Plans"));
+//        tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
 
-        tabLayout.addTab(tabLayout.newTab().setText("Map View"));
-        tabLayout.addTab(tabLayout.newTab().setText("Recommended Plans"));
-        tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
-
-        viewPager = (ViewPager) findViewById(R.id.pager);
-        final PageAdapter adapter = new PageAdapter
-                (getSupportFragmentManager(), tabLayout.getTabCount(), cardFrag);
-        viewPager.setAdapter(adapter);
-        tabLayout.setOnTabSelectedListener(this);
-
-        viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
+//        viewPager = (ViewPager) findViewById(R.id.pager);
+//        final PageAdapter adapter = new PageAdapter
+//                (getSupportFragmentManager(), tabLayout.getTabCount(), cardFrag);
+//        viewPager.setAdapter(adapter);
+//        tabLayout.setOnTabSelectedListener(this);
+//
+//        viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
