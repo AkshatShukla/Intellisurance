@@ -48,7 +48,7 @@ public class LoginActivity extends AppCompatActivity {
     LinearLayout li;
 
     private LVBlock mLVBlock;
-    private static int ANIMATION_DELAY = 0;
+    private static int ANIMATION_DELAY = 3000;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {

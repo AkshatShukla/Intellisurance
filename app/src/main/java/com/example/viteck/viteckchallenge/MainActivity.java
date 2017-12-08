@@ -33,6 +33,11 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -47,12 +52,16 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
     private FirebaseAuth mAuth;
     private DrawerLayout di;
     private JSONObject MLResponse = null;
+    private CardFragment cardFrag;
+
+    Bundle bundle;
 
     @SuppressLint("CutPasteId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
+
 
         setContentView(R.layout.nav_drawer);
         Window window = this.getWindow();
@@ -67,25 +76,94 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             window.setStatusBarColor(this.getResources().getColor(R.color.colorPrimary));
         }
+
+        mAuth = FirebaseAuth.getInstance();
+
+
         Intent i = getIntent();
+        cardFrag = new CardFragment();
         if(i.hasExtra("MLResponse")){
+
             String rawResponse = i.getStringExtra("MLResponse");
             try {
-                MLResponse = new JSONObject(rawResponse);
-                String s = MLResponse.get("cust_data").toString();
+                JSONObject someObj = new JSONObject(rawResponse);
+                String s = someObj.get("cust_data").toString();
                 JSONObject j = new JSONObject(s);
                 double bronzePrem = j.getDouble("BRONZE_PREMIUM");
                 double silverPrem = j.getDouble("SILVER_PREMIUM");
                 double goldPrem = j.getDouble("GOLD_PREMIUM");
                 double platinumPrem = j.getDouble("PLATINUM_PREMIUM");
                 int cls = j.getInt("CLASS");
+
+                bundle = new Bundle();
+                bundle.putDouble("bronzePremium", bronzePrem);
+                bundle.putDouble("silverPremium", silverPrem);
+                bundle.putDouble("goldPremium", goldPrem);
+                bundle.putDouble("platinumPremium", platinumPrem);
+                bundle.putInt("class", cls);
+                cardFrag.setArguments(bundle);
+
+
             }catch(JSONException e){
                 e.printStackTrace();
             }
+        }else{
+
+            FirebaseDatabase database = FirebaseDatabase.getInstance();
+            DatabaseReference mDatabase = database.getReference();
+
+            String user = mAuth.getCurrentUser().getUid();
+            final DatabaseReference dbResponse = mDatabase.child("Users").child(user).child("predicted");
+            dbResponse.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    //String arrayAsString = dataSnapshot.child("preexisting").getValue().toString();
+                    //conditionsList = (ArrayList<String>) Arrays.asList(arrayAsString.replace("[", "").replace("]", "").split(","));
+                    /*
+                    FirebaseDatabase.getInstance().getReference().child("User").child(thisUser).child("predicted").child("Bronze").setValue(bronzePrem);
+            FirebaseDatabase.getInstance().getReference().child("User").child(thisUser).child("predicted").child("Silver").setValue(silverPrem);
+            FirebaseDatabase.getInstance().getReference().child("User").child(thisUser).child("predicted").child("Gold").setValue(goldPrem);
+            FirebaseDatabase.getInstance().getReference().child("User").child(thisUser).child("predicted").child("Platinum").setValue(platinumPrem);
+            FirebaseDatabase.getInstance().getReference().child("User").child(thisUser).child("predicted").child("Class").setValue(cls);
+                     */
+                    double bronze_val = (double) dataSnapshot.child("Bronze").getValue();
+                    double silver_val = (double) dataSnapshot.child("Silver").getValue();
+                    double gold_val = (double) dataSnapshot.child("Gold").getValue();
+                    double plat_val = (double) dataSnapshot.child("Platinum").getValue();
+                    int classifier = (int) dataSnapshot.child("Class").getValue();
+
+                    bundle = new Bundle();
+                    bundle.putDouble("bronzePremium", bronze_val);
+                    bundle.putDouble("silverPremium", silver_val);
+                    bundle.putDouble("goldPremium", gold_val);
+                    bundle.putDouble("platinumPremium", plat_val);
+                    bundle.putInt("class", classifier);
+
+                    cardFrag.setArguments(bundle);
+                    TabLayout tabLayout = (TabLayout) findViewById(R.id.tab_layout);
+
+                    tabLayout.addTab(tabLayout.newTab().setText("Map View"));
+                    tabLayout.addTab(tabLayout.newTab().setText("Recommended Plans"));
+                    tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
+
+                    viewPager = (ViewPager) findViewById(R.id.pager);
+                    final PageAdapter adapter = new PageAdapter
+                            (getSupportFragmentManager(), tabLayout.getTabCount(), cardFrag);
+                    viewPager.setAdapter(adapter);
+                    tabLayout.setOnTabSelectedListener(MainActivity.this);
+
+                    viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+                }
+            });
+
         }
 
         di = (DrawerLayout) findViewById(R.id.drawer_layout);
-        mAuth = FirebaseAuth.getInstance();
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         setTitle("");
@@ -97,7 +175,7 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
 
         viewPager = (ViewPager) findViewById(R.id.pager);
         final PageAdapter adapter = new PageAdapter
-                (getSupportFragmentManager(), tabLayout.getTabCount());
+                (getSupportFragmentManager(), tabLayout.getTabCount(), cardFrag);
         viewPager.setAdapter(adapter);
         tabLayout.setOnTabSelectedListener(this);
 

@@ -1,5 +1,6 @@
 package com.example.viteck.viteckchallenge;
 
+import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
@@ -10,11 +11,13 @@ import android.support.v4.app.FragmentStatePagerAdapter;
 
 public class PageAdapter extends FragmentStatePagerAdapter {
     int numOftabs;
+    CardFragment cardFrag;
 
-    public PageAdapter (FragmentManager fm, int numOfTabs)
+    public PageAdapter (FragmentManager fm, int numOfTabs, CardFragment cardFrag)
     {
         super(fm);
         this.numOftabs = numOfTabs;
+        this.cardFrag = cardFrag;
 
     }
     @Override
@@ -24,8 +27,7 @@ public class PageAdapter extends FragmentStatePagerAdapter {
                 MapFragment tab1 = new MapFragment();
                 return tab1;
             case 1:
-                CardFragment tab2 = new CardFragment();
-                return tab2;
+                return cardFrag;
             default:
                 return null;
         }

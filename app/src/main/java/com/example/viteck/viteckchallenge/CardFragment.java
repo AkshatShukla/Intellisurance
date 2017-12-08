@@ -2,6 +2,8 @@ package com.example.viteck.viteckchallenge;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
+import android.graphics.Color;
 import android.graphics.Rect;
 import android.hardware.display.DisplayManager;
 import android.os.Bundle;
@@ -15,9 +17,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
+import android.widget.TextView;
 import android.widget.Toast;
+
+import org.json.JSONObject;
+
+import eu.amirs.JSON;
 
 /**
  * Created by Eric on 12/2/2017.
@@ -25,7 +33,11 @@ import android.widget.Toast;
 
 public class CardFragment extends Fragment implements ViewTreeObserver.OnGlobalLayoutListener {
     private static final String TAG = "CardFragment";
-
+    double bronzePrem;
+    double silverPrem;
+    double platinumPrem;
+    double goldPrem;
+    int cls;
     private RecyclerView recycler;
     private RecyclerView.Adapter adapter;
     private  ScrollView scrollView;
@@ -48,11 +60,122 @@ public class CardFragment extends Fragment implements ViewTreeObserver.OnGlobalL
          card2DidShow = false;
          card3DidShow = false;
          card4DidShow = false;
+
+        ImageView platStar = rootview.findViewById(R.id.platStar);
+        TextView platPredictedPrice = rootview.findViewById(R.id.platPredictedPrice);
+        ImageView platArrow = rootview.findViewById(R.id.platArrow);
+        TextView platComparisonText = rootview.findViewById(R.id.platComparisonText);
+        ImageView goldStar = rootview.findViewById(R.id.goldStar);
+        TextView goldPredictedPrice = rootview.findViewById(R.id.goldPredictedPrice);
+        ImageView goldArrow = rootview.findViewById(R.id.goldArrow);
+        TextView goldComparisonText = rootview.findViewById(R.id.goldComparisonText);
+        ImageView silverStar = rootview.findViewById(R.id.silverStar);
+        TextView silverPredictedPrice = rootview.findViewById(R.id.silverPredictedPrice);
+        ImageView silverArrow = rootview.findViewById(R.id.silverArrow);
+        TextView silverComparisonText = rootview.findViewById(R.id.silverComparisonText);
+        ImageView bronzeStar = rootview.findViewById(R.id.bronzeStar);
+        TextView bronzePredictedPrice = rootview.findViewById(R.id.bronzePredictedPrice);
+        ImageView bronzeArrow = rootview.findViewById(R.id.bronzeArrow);
+        TextView bronzeComparisonText = rootview.findViewById(R.id.bronzeComparisonText);
+
         card1 = rootview.findViewById(R.id.card1);
         final CardView card2 = rootview.findViewById(R.id.card2);
         final CardView card3 = rootview.findViewById(R.id.card3);
         final CardView card4 = rootview.findViewById(R.id.card4);
         scrollView = rootview.findViewById(R.id.scrollView);
+
+
+        Bundle args = getArguments();
+        bronzePrem = args.getDouble("bronzePremium");
+        silverPrem = args.getDouble("silverPremium");
+        goldPrem = args.getDouble("goldPremium");
+        platinumPrem = args.getDouble("platinumPremium");
+        cls = args.getInt("class");
+
+        double predictedPrice;
+
+        if(cls == 1){
+            predictedPrice = bronzePrem;
+            bronzeStar.setVisibility(View.VISIBLE);
+        }else if(cls == 2){
+            predictedPrice = silverPrem;
+            silverStar.setVisibility(View.VISIBLE);
+        }else if(cls == 3){
+            predictedPrice = goldPrem;
+            goldStar.setVisibility(View.VISIBLE);
+        }else{
+            predictedPrice = platinumPrem;
+            platStar.setVisibility(View.VISIBLE);
+        }
+
+        platPredictedPrice.setText(Double.toString((int)platinumPrem));
+        goldPredictedPrice.setText(Double.toString((int)goldPrem));
+        silverPredictedPrice.setText(Double.toString((int)silverPrem));
+        bronzePredictedPrice.setText(Double.toString((int)bronzePrem));
+
+        double platPercent = (platinumPrem / predictedPrice) * 100;
+        double goldPercent = (goldPrem / predictedPrice) * 100;
+        double silverPercent = (silverPrem / predictedPrice) * 100;
+        double bronzePercent = (bronzePrem / predictedPrice) * 100;
+
+        platComparisonText.setText(Double.toString((int)platPercent));
+        goldComparisonText.setText(Double.toString((int)goldPercent));
+        silverComparisonText.setText(Double.toString((int)silverPercent));
+        bronzeComparisonText.setText(Double.toString((int)bronzePercent));
+
+        double platDifference = predictedPrice - platinumPrem;
+        double goldDifference = predictedPrice - goldPrem;
+        double silverDifference = predictedPrice - silverPrem;
+        double bronzeDifference = predictedPrice - bronzePrem;
+
+        if(platDifference > 0){
+            //Current plan costs less
+            platArrow.setImageResource(R.drawable.up_arrow);
+            platComparisonText.setTextColor(Color.GREEN);
+        }else if(platDifference < 0){
+            //Current plan costs more
+            platArrow.setImageResource(R.drawable.down_arrow);
+            platComparisonText.setTextColor(Color.RED);
+        }else{
+            platArrow.setVisibility(View.INVISIBLE);
+        }
+        if(goldDifference > 0){
+            //Current plan costs less
+            goldArrow.setImageResource(R.drawable.up_arrow);
+            goldComparisonText.setTextColor(Color.GREEN);
+        }else if(goldDifference < 0){
+            //Current plan costs more
+            goldArrow.setImageResource(R.drawable.down_arrow);
+            goldComparisonText.setTextColor(Color.RED);
+        }
+        else{
+            goldArrow.setVisibility(View.INVISIBLE);
+        }
+        if(silverDifference > 0){
+            //Current plan costs less
+            silverArrow.setImageResource(R.drawable.up_arrow);
+            silverComparisonText.setTextColor(Color.GREEN);
+        }else if(silverDifference < 0){
+            //Current plan costs more
+            silverArrow.setImageResource(R.drawable.down_arrow);
+            silverComparisonText.setTextColor(Color.RED);
+        }
+        else{
+            silverArrow.setVisibility(View.INVISIBLE);
+        }
+        if(bronzeDifference > 0){
+            //Current plan costs less
+            bronzeArrow.setImageResource(R.drawable.up_arrow);
+            bronzeComparisonText.setTextColor(Color.GREEN);
+        }else if(bronzeDifference < 0){
+            //Current plan costs more
+            bronzeArrow.setImageResource(R.drawable.down_arrow);
+            bronzeComparisonText.setTextColor(Color.RED);
+        }
+        else{
+            bronzeArrow.setVisibility(View.INVISIBLE);
+        }
+
 
         /*
         DisplayMetrics displayMetrics = new DisplayMetrics();

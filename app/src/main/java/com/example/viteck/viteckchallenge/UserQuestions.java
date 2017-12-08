@@ -80,11 +80,66 @@ public class UserQuestions extends Activity implements VerticalStepperForm, mlRe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.questions);
         Intent i = this.getIntent();
+        database = FirebaseDatabase.getInstance();
+        mAuth = FirebaseAuth.getInstance();
+        mDatabase = database.getReference();
         if ((i.getExtras()!=null) && (i.getExtras().get("fromMain").equals("true"))) {
             fromMain = true;
-            database = FirebaseDatabase.getInstance();
-            mAuth = FirebaseAuth.getInstance();
-            mDatabase = database.getReference();
+
+
+
+//            String[] mySteps = {"State", "City", "Age", "Sex", "Height (in)", "Weight (lbs)", "Annual Income", "Employment", "Maritial Status", "Smoker", "Optional Insured", "People Covered", "Preconditions"};
+//            int colorPrimary = ContextCompat.getColor(getApplicationContext(), R.color.colorPrimary);
+//            int colorPrimaryDark = ContextCompat.getColor(getApplicationContext(), R.color.colorPrimaryDark);
+
+//            LayoutInflater inflater = LayoutInflater.from(getBaseContext());
+//            spinnerLayout = (LinearLayout) inflater.inflate(R.layout.views, null, false);
+//            // Finding the view
+
+            //DO FIREBASE HERE AND API CALL HERE.
+            FirebaseDatabase database = FirebaseDatabase.getInstance();
+            FirebaseAuth mAuth = FirebaseAuth.getInstance();
+            DatabaseReference mDatabase = database.getReference();
+//            String user = mAuth.getCurrentUser().getUid();
+//            mDatabase.child("Users").child(user).child("age").setValue(age.getText().toString());
+//            mDatabase.child("Users").child(user).child("state").setValue(state.getSelectedItem().toString());
+//            mDatabase.child("Users").child(user).child("city").setValue(city.getSelectedItem().toString());
+//            int sexId = sex.getId();
+//            if (sexId == -1) {
+//                mDatabase.child("Users").child(user).child("sex").setValue("M");
+//            } else {
+//                mDatabase.child("Users").child(user).child("sex").setValue("F");
+//            }
+//            mDatabase.child("Users").child(user).child("height").setValue(height.getText().toString());
+//            mDatabase.child("Users").child(user).child("weight").setValue(weight.getText().toString());
+//            mDatabase.child("Users").child(user).child("income").setValue(income.getText().toString());
+//            int employementId = employment.getId();
+//            if (employementId == -1) {
+//                mDatabase.child("Users").child(user).child("employment").setValue("employed");
+//            } else {
+//                mDatabase.child("Users").child(user).child("employment").setValue("unemployed");
+//
+//            }
+//            int martialStat = maritialStatus.getId();
+//            if (martialStat == -1) {
+//                mDatabase.child("Users").child(user).child("maritalstatus").setValue("single");
+//
+//            } else {
+//                mDatabase.child("Users").child(user).child("maritalstatus").setValue("married");
+//
+//            }
+//            int smokerStat = smoker.getId();
+//            if (smokerStat == -1) {
+//                mDatabase.child("Users").child(user).child("smoker").setValue("true");
+//
+//            } else {
+//                mDatabase.child("Users").child(user).child("smoker").setValue("false");
+//
+//            }
+//            mDatabase.child("Users").child(user).child("optionalinsured").setValue(optionallyInsured.getText().toString());
+//            mDatabase.child("Users").child(user).child("peoplecovered").setValue(peopleCovered.getText().toString());
+//            mDatabase.child("Users").child(user).child("preexisting").setValue(conditionsList.toString());
+
         }
 
         String[] mySteps = {"State", "City", "Age", "Sex", "Height (in)", "Weight (lbs)", "Annual Income", "Employment", "Maritial Status", "Smoker", "Optional Insured", "People Covered", "Preconditions"};
@@ -93,7 +148,6 @@ public class UserQuestions extends Activity implements VerticalStepperForm, mlRe
 
         LayoutInflater inflater = LayoutInflater.from(getBaseContext());
         spinnerLayout = (LinearLayout) inflater.inflate(R.layout.views, null, false);
-        // Finding the view
 
         verticalStepperForm = findViewById(R.id.vertical_stepper_form);
 
@@ -149,6 +203,48 @@ public class UserQuestions extends Activity implements VerticalStepperForm, mlRe
                 view = createPreconditionsStep();
                 break;
             default:
+                FirebaseDatabase database = FirebaseDatabase.getInstance();
+                FirebaseAuth mAuth = FirebaseAuth.getInstance();
+                DatabaseReference mDatabase = database.getReference();
+                String user = mAuth.getCurrentUser().getUid();
+                mDatabase.child("Users").child(user).child("age").setValue(age.getText().toString());
+                mDatabase.child("Users").child(user).child("state").setValue(state.getSelectedItem().toString());
+                mDatabase.child("Users").child(user).child("city").setValue(city.getSelectedItem().toString());
+                int sexId = sex.getId();
+                if (sexId == -1) {
+                    mDatabase.child("Users").child(user).child("sex").setValue("M");
+                } else {
+                    mDatabase.child("Users").child(user).child("sex").setValue("F");
+                }
+                mDatabase.child("Users").child(user).child("height").setValue(height.getText().toString());
+                mDatabase.child("Users").child(user).child("weight").setValue(weight.getText().toString());
+                mDatabase.child("Users").child(user).child("income").setValue(income.getText().toString());
+                int employementId = employment.getId();
+                if (employementId == -1) {
+                    mDatabase.child("Users").child(user).child("employment").setValue("employed");
+                } else {
+                    mDatabase.child("Users").child(user).child("employment").setValue("unemployed");
+
+                }
+                int martialStat = maritialStatus.getId();
+                if (martialStat == -1) {
+                    mDatabase.child("Users").child(user).child("maritalstatus").setValue("single");
+
+                } else {
+                    mDatabase.child("Users").child(user).child("maritalstatus").setValue("married");
+
+                }
+                int smokerStat = smoker.getId();
+                if (smokerStat == -1) {
+                    mDatabase.child("Users").child(user).child("smoker").setValue("true");
+
+                } else {
+                    mDatabase.child("Users").child(user).child("smoker").setValue("false");
+
+                }
+                mDatabase.child("Users").child(user).child("optionalinsured").setValue(optionallyInsured.getText().toString());
+                mDatabase.child("Users").child(user).child("peoplecovered").setValue(peopleCovered.getText().toString());
+                mDatabase.child("Users").child(user).child("preexisting").setValue(conditionsList.toString());
                 break;
         }
         return view;
@@ -197,66 +293,6 @@ public class UserQuestions extends Activity implements VerticalStepperForm, mlRe
                 break;
             case 12:
                 verticalStepperForm.setActiveStepAsCompleted();
-                break;
-            case 13:
-                //Confirmation
-                //DO FIREBASE HERE AND API CALL HERE.
-                FirebaseDatabase database = FirebaseDatabase.getInstance();
-                FirebaseAuth mAuth = FirebaseAuth.getInstance();
-                DatabaseReference mDatabase = database.getReference();
-                String user = mAuth.getCurrentUser().getUid();
-                mDatabase.child("Users").child(user).child("age").setValue(age.getText().toString());
-                mDatabase.child("Users").child(user).child("state").setValue(state.getSelectedItem().toString());
-                mDatabase.child("Users").child(user).child("city").setValue(city.getSelectedItem().toString());
-                int sexId = sex.getId();
-                if (sexId == -1)
-                {
-                    mDatabase.child("Users").child(user).child("sex").setValue("M");
-                }
-                else
-                {
-                    mDatabase.child("Users").child(user).child("sex").setValue("F");
-                }
-                mDatabase.child("Users").child(user).child("height").setValue(height.getText().toString());
-                mDatabase.child("Users").child(user).child("weight").setValue(weight.getText().toString());
-                mDatabase.child("Users").child(user).child("income").setValue(income.getText().toString());
-                int employementId = employment.getId();
-                if (employementId == -1)
-                {
-                    mDatabase.child("Users").child(user).child("employment").setValue("employed");
-                }
-                else {
-                    mDatabase.child("Users").child(user).child("employment").setValue("unemployed");
-
-                }
-                int martialStat = maritialStatus.getId();
-                if (martialStat == -1)
-                {
-                    mDatabase.child("Users").child(user).child("maritalstatus").setValue("single");
-
-                }
-                else
-                {
-                    mDatabase.child("Users").child(user).child("maritalstatus").setValue("married");
-
-                }
-                int smokerStat = smoker.getId();
-                if (smokerStat == -1)
-                {
-                    mDatabase.child("Users").child(user).child("smoker").setValue("true");
-
-                }
-                else
-                {
-                    mDatabase.child("Users").child(user).child("smoker").setValue("false");
-
-                }
-                mDatabase.child("Users").child(user).child("optionalinsured").setValue(optionallyInsured.getText().toString());
-                mDatabase.child("Users").child(user).child("peoplecovered").setValue(peopleCovered.getText().toString());
-                mDatabase.child("Users").child(user).child("preexisting").setValue(conditionsList.toString());
-
-
-
                 break;
             default:
                 break;
@@ -327,6 +363,34 @@ public class UserQuestions extends Activity implements VerticalStepperForm, mlRe
     public void handleMlResponse(String s) {
         Intent i = new Intent(this, MainActivity.class);
         i.putExtra("MLResponse", s);
+        try
+        {
+            JSONObject MLResponse = new JSONObject(s);
+            String ss = MLResponse.get("cust_data").toString();
+            JSONObject j = new JSONObject(ss);
+            double bronzePrem = j.getDouble("BRONZE_PREMIUM");
+            double silverPrem = j.getDouble("SILVER_PREMIUM");
+            double goldPrem = j.getDouble("GOLD_PREMIUM");
+            double platinumPrem = j.getDouble("PLATINUM_PREMIUM");
+            int cls = j.getInt("CLASS");
+
+
+            database = FirebaseDatabase.getInstance();
+            mAuth = FirebaseAuth.getInstance();
+            String thisUser = mAuth.getCurrentUser().getUid();
+            DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference().child("Users").child(thisUser);
+            dbRef.child("prediction").setValue(bronzePrem);
+            //FirebaseDatabase.getInstance().getReference().child("Users").child(thisUser).child("Bronze").setValue(bronzePrem);
+            //FirebaseDatabase.getInstance().getReference().child("Users").child(thisUser).child("predicted").child("Silver").setValue(silverPrem);
+            FirebaseDatabase.getInstance().getReference().child("Users").child(thisUser).child("predicted").child("Gold").setValue(goldPrem);
+            FirebaseDatabase.getInstance().getReference().child("Users").child(thisUser).child("predicted").child("Platinum").setValue(platinumPrem);
+            FirebaseDatabase.getInstance().getReference().child("Users").child(thisUser).child("predicted").child("Class").setValue(cls);
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+
         startActivity(i);
     }
 

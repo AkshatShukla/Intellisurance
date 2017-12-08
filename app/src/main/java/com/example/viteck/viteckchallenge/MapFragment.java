@@ -116,7 +116,7 @@ public class MapFragment extends android.support.v4.app.Fragment implements OnMa
             e.printStackTrace();
         }
         stateName = addresses.get(0).getAdminArea();
-        theMap = processMapLatLng(20);
+        theMap = processMapLatLng(50);
         return mview;
 
     }
@@ -191,7 +191,7 @@ public class MapFragment extends android.support.v4.app.Fragment implements OnMa
             int count = 0;
             for (LatLng latLng : theMap.keySet())
             {
-                if (count == 20)
+                if (count == 50)
                 {
                     break;
                 }

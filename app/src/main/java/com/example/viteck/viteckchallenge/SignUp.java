@@ -347,7 +347,7 @@ public class SignUp extends AppCompatActivity implements View.OnClickListener, A
             //Initializing FireBase Auth object
             firebaseAuth = FirebaseAuth.getInstance();
 
-            final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+            //final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
             //creating a new user in FireBase Auth Database
             firebaseAuth.createUserWithEmailAndPassword(email, password)
@@ -357,12 +357,13 @@ public class SignUp extends AppCompatActivity implements View.OnClickListener, A
                             //checking if success
                             if(task.isSuccessful()){
                                 //display some message here
+                                Toast.makeText(SignUp.this, R.string.reg_success, Toast.LENGTH_LONG).show();
                             }else{
                                 //display some message here
                                 /*Snackbar snackbar = Snackbar
                                         .make(li, R.string.reg_fail, Snackbar.LENGTH_LONG);
                                 snackbar.show();*/
-                                Toast.makeText(SignUp.this, R.string.reg_fail, Toast.LENGTH_LONG).show();
+                                Toast.makeText(SignUp.this, "User already exists! Please go log in.", Toast.LENGTH_LONG).show();
                             }
                         }
                     });
