@@ -265,21 +265,22 @@ public class MapFragment extends android.support.v4.app.Fragment implements OnMa
                             int silver = (int) cityObject.get("Silver");
                             int gold = (int) cityObject.get("Gold");
                             int platinum = (int) cityObject.get("Platinum");
+                            int total = bronze + silver + gold + platinum;
 
                             for (Address a : address) {
                                 if (a.hasLatitude() && a.hasLongitude()) {
                                     LatLng someLatLng = new LatLng(a.getLatitude(), a.getLongitude());
                                     float[] intensityPoints = {
-                                            (float)silver/silversum, (float)gold/goldsum, (float)bronze/bronzesum,(float)platinum/platinumsum
+                                            (float)silver/total, (float)gold/total, (float)bronze/total,(float)platinum/total
                                     };
                                     Arrays.sort(intensityPoints);//I am sorting this which is going to put the order of silver,
                                     //gold,bronze, and platinum out of order i can fix this by also sorting the gradient_colors based
                                     //off of a key value pair where i sort the keys where the keys are the start points and the values
                                     //will then be in order!
-                                    Pair<Float, Integer> testing = new Pair<Float, Integer>( (float) silver/  silversum, Color.rgb(255, 215, 0)); //silver
-                                    Pair<Float, Integer> testing2 = new  Pair<Float, Integer>( (float) gold/  goldsum, Color.rgb(211, 211, 211));//gold
-                                    Pair<Float, Integer> testing3 =  new Pair<Float, Integer>( (float) bronze/  bronzesum, Color.rgb(212, 175, 55));//bronze,
-                                    Pair<Float, Integer> testing4 =  new Pair<Float, Integer>( (float) platinum/  platinumsum, Color.rgb(160, 170, 191));
+                                    Pair<Float, Integer> testing = new Pair<Float, Integer>( (float) silver/  total, Color.rgb(255, 215, 0)); //silver
+                                    Pair<Float, Integer> testing2 = new  Pair<Float, Integer>( (float) gold/  total, Color.rgb(211, 211, 211));//gold
+                                    Pair<Float, Integer> testing3 =  new Pair<Float, Integer>( (float) bronze/  total, Color.rgb(212, 175, 55));//bronze,
+                                    Pair<Float, Integer> testing4 =  new Pair<Float, Integer>( (float) platinum/  total, Color.rgb(160, 170, 191));
                                     ArrayList<Pair<Float, Integer>>  health_gradient = new ArrayList<>();
                                     health_gradient.add(testing);
                                     health_gradient.add(testing2);
@@ -292,7 +293,6 @@ public class MapFragment extends android.support.v4.app.Fragment implements OnMa
                                         }
                                     });
                                      int[] final_gradient = new int [4];
-
                                     for (int k = 0; k < health_gradient.size(); k++)
                                     {
                                         final_gradient[k]= health_gradient.get(k).second;

@@ -2,6 +2,8 @@ package com.example.viteck.viteckchallenge;
 
 
 import android.annotation.SuppressLint;
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
@@ -9,6 +11,7 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
+import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
@@ -103,6 +106,20 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
                 bundle.putInt("class", cls);
                 cardFrag.setArguments(bundle);
 
+                TabLayout tabLayout = (TabLayout) findViewById(R.id.tab_layout);
+
+                tabLayout.addTab(tabLayout.newTab().setText("Map View"));
+                tabLayout.addTab(tabLayout.newTab().setText("Recommended Plans"));
+                tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
+
+                viewPager = (ViewPager) findViewById(R.id.pager);
+                final PageAdapter adapter = new PageAdapter
+                        (getSupportFragmentManager(), tabLayout.getTabCount(), cardFrag);
+                viewPager.setAdapter(adapter);
+                tabLayout.setOnTabSelectedListener(this);
+
+                viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
+
 
             }catch(JSONException e){
                 e.printStackTrace();
@@ -169,20 +186,6 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         setTitle("");
-//        TabLayout tabLayout = (TabLayout) findViewById(R.id.tab_layout);
-//
-//        tabLayout.addTab(tabLayout.newTab().setText("Map View"));
-//        tabLayout.addTab(tabLayout.newTab().setText("Recommended Plans"));
-//        tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
-
-//        viewPager = (ViewPager) findViewById(R.id.pager);
-//        final PageAdapter adapter = new PageAdapter
-//                (getSupportFragmentManager(), tabLayout.getTabCount(), cardFrag);
-//        viewPager.setAdapter(adapter);
-//        tabLayout.setOnTabSelectedListener(this);
-//
-//        viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
-
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -204,6 +207,15 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
         if (id == R.id.nav_profile) {
             intent = new Intent(this, UserQuestions.class);
             intent.putExtra("fromMain", "true");
+
+            FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
+            for (android.app.Fragment fragment : getFragmentManager().getFragments())
+            {
+                fragmentTransaction.remove(fragment);
+            }
+
+
+
             startActivity(intent);
 
         } else if (id == R.id.nav_logout) {
@@ -218,6 +230,8 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
+
+
 
     @Override
     public void onTabSelected(TabLayout.Tab tab) {

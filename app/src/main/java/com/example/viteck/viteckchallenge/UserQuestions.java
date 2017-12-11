@@ -31,6 +31,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import ernestoyaquello.com.verticalstepperform.VerticalStepperFormLayout;
 import ernestoyaquello.com.verticalstepperform.interfaces.VerticalStepperForm;
@@ -65,6 +66,22 @@ public class UserQuestions extends Activity implements VerticalStepperForm, mlRe
     private int medConditions;
     private int highConditions;
 
+    private String stateInput = "";
+    private String cityInput = "";
+    private String sexInput = "";
+    private String ageInput;
+    private  String employmentInput = "";
+    private String maritalstatusInput = "";
+    private String optionalinsuredInput;
+    private  String peoplecoveredInput;
+    private String preexisting;
+    private String smokerInput = "";
+    private String weightInput;
+    private String heightInput;
+    private String incomeInput;
+
+
+
     boolean fromMain = false;
     private Button doneButton;
     FirebaseAuth mAuth;
@@ -85,6 +102,8 @@ public class UserQuestions extends Activity implements VerticalStepperForm, mlRe
 
 
 
+
+
 //            String[] mySteps = {"State", "City", "Age", "Sex", "Height (in)", "Weight (lbs)", "Annual Income", "Employment", "Maritial Status", "Smoker", "Optional Insured", "People Covered", "Preconditions"};
 //            int colorPrimary = ContextCompat.getColor(getApplicationContext(), R.color.colorPrimary);
 //            int colorPrimaryDark = ContextCompat.getColor(getApplicationContext(), R.color.colorPrimaryDark);
@@ -95,50 +114,68 @@ public class UserQuestions extends Activity implements VerticalStepperForm, mlRe
 
             //DO FIREBASE HERE AND API CALL HERE.
             FirebaseDatabase database = FirebaseDatabase.getInstance();
-            FirebaseAuth mAuth = FirebaseAuth.getInstance();
             DatabaseReference mDatabase = database.getReference();
-//            String user = mAuth.getCurrentUser().getUid();
-//            mDatabase.child("Users").child(user).child("age").setValue(age.getText().toString());
-//            mDatabase.child("Users").child(user).child("state").setValue(state.getSelectedItem().toString());
-//            mDatabase.child("Users").child(user).child("city").setValue(city.getSelectedItem().toString());
-//            int sexId = sex.getId();
-//            if (sexId == -1) {
-//                mDatabase.child("Users").child(user).child("sex").setValue("M");
-//            } else {
-//                mDatabase.child("Users").child(user).child("sex").setValue("F");
-//            }
-//            mDatabase.child("Users").child(user).child("height").setValue(height.getText().toString());
-//            mDatabase.child("Users").child(user).child("weight").setValue(weight.getText().toString());
-//            mDatabase.child("Users").child(user).child("income").setValue(income.getText().toString());
-//            int employementId = employment.getId();
-//            if (employementId == -1) {
-//                mDatabase.child("Users").child(user).child("employment").setValue("employed");
-//            } else {
-//                mDatabase.child("Users").child(user).child("employment").setValue("unemployed");
-//
-//            }
-//            int martialStat = maritialStatus.getId();
-//            if (martialStat == -1) {
-//                mDatabase.child("Users").child(user).child("maritalstatus").setValue("single");
-//
-//            } else {
-//                mDatabase.child("Users").child(user).child("maritalstatus").setValue("married");
-//
-//            }
-//            int smokerStat = smoker.getId();
-//            if (smokerStat == -1) {
-//                mDatabase.child("Users").child(user).child("smoker").setValue("true");
-//
-//            } else {
-//                mDatabase.child("Users").child(user).child("smoker").setValue("false");
-//
-//            }
-//            mDatabase.child("Users").child(user).child("optionalinsured").setValue(optionallyInsured.getText().toString());
-//            mDatabase.child("Users").child(user).child("peoplecovered").setValue(peopleCovered.getText().toString());
-//            mDatabase.child("Users").child(user).child("preexisting").setValue(conditionsList.toString());
+
+            String user = mAuth.getCurrentUser().getUid();
+            final DatabaseReference dbResponse = mDatabase.child("Users").child(user);
+            dbResponse.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    ageInput = (String) dataSnapshot.child("age").getValue();
+                    stateInput = (String) dataSnapshot.child("state").getValue();
+                    cityInput = (String) dataSnapshot.child("city").getValue();
+                    sexInput = (String) dataSnapshot.child("sex").getValue();
+                    employmentInput = (String) dataSnapshot.child("employment").getValue();
+                    maritalstatusInput = (String) dataSnapshot.child("maritalstatus").getValue();
+                    optionalinsuredInput = (String) dataSnapshot.child("optionalinsured").getValue();
+                    peoplecoveredInput = (String) dataSnapshot.child("peoplecovered").getValue();
+                    preexisting = (String) dataSnapshot.child("preexisting").getValue();
+                    smokerInput = (String) dataSnapshot.child("smoker").getValue();
+                    weightInput = (String) dataSnapshot.child("weight").getValue();
+                    heightInput = (String) dataSnapshot.child("height").getValue();
+                    incomeInput = (String) dataSnapshot.child("income").getValue();
+
+                    verticalStepper();
+
+
+
+
+
+
+
+                }
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+                }
+            });
+
+
 
         }
+        else
+        {
+            String[] mySteps = {"State", "City", "Age", "Sex", "Height (in)", "Weight (lbs)", "Annual Income", "Employment", "Maritial Status", "Smoker", "Optional Insured", "People Covered", "Preconditions"};
+            int colorPrimary = ContextCompat.getColor(getApplicationContext(), R.color.colorPrimary);
+            int colorPrimaryDark = ContextCompat.getColor(getApplicationContext(), R.color.colorPrimaryDark);
 
+            LayoutInflater inflater = LayoutInflater.from(getBaseContext());
+            parentLayout = (LinearLayout) inflater.inflate(R.layout.views, null, false);
+
+            verticalStepperForm = findViewById(R.id.vertical_stepper_form);
+
+            // Setting up and initializing the form
+            VerticalStepperFormLayout.Builder.newInstance(verticalStepperForm, mySteps, this, this)
+                    .primaryColor(colorPrimary)
+                    .primaryDarkColor(colorPrimaryDark)
+                    .displayBottomNavigation(false) // Defaults to true
+                    .init();
+        }
+
+
+    }
+
+    public void verticalStepper()
+    {
         String[] mySteps = {"State", "City", "Age", "Sex", "Height (in)", "Weight (lbs)", "Annual Income", "Employment", "Maritial Status", "Smoker", "Optional Insured", "People Covered", "Preconditions"};
         int colorPrimary = ContextCompat.getColor(getApplicationContext(), R.color.colorPrimary);
         int colorPrimaryDark = ContextCompat.getColor(getApplicationContext(), R.color.colorPrimaryDark);
@@ -155,6 +192,7 @@ public class UserQuestions extends Activity implements VerticalStepperForm, mlRe
                 .displayBottomNavigation(false) // Defaults to true
                 .init();
     }
+
 
     @Override
     public View createStepContentView(int stepNumber) {
@@ -200,48 +238,6 @@ public class UserQuestions extends Activity implements VerticalStepperForm, mlRe
                 view = createPreconditionsStep();
                 break;
             default:
-                FirebaseDatabase database = FirebaseDatabase.getInstance();
-                FirebaseAuth mAuth = FirebaseAuth.getInstance();
-                DatabaseReference mDatabase = database.getReference();
-                String user = mAuth.getCurrentUser().getUid();
-                mDatabase.child("Users").child(user).child("age").setValue(age.getText().toString());
-                mDatabase.child("Users").child(user).child("state").setValue(state.getSelectedItem().toString());
-                mDatabase.child("Users").child(user).child("city").setValue(city.getSelectedItem().toString());
-                int sexId = sex.getId();
-                if (sexId == -1) {
-                    mDatabase.child("Users").child(user).child("sex").setValue("M");
-                } else {
-                    mDatabase.child("Users").child(user).child("sex").setValue("F");
-                }
-                mDatabase.child("Users").child(user).child("height").setValue(height.getText().toString());
-                mDatabase.child("Users").child(user).child("weight").setValue(weight.getText().toString());
-                mDatabase.child("Users").child(user).child("income").setValue(income.getText().toString());
-                int employementId = employment.getId();
-                if (employementId == -1) {
-                    mDatabase.child("Users").child(user).child("employment").setValue("employed");
-                } else {
-                    mDatabase.child("Users").child(user).child("employment").setValue("unemployed");
-
-                }
-                int martialStat = maritialStatus.getId();
-                if (martialStat == -1) {
-                    mDatabase.child("Users").child(user).child("maritalstatus").setValue("single");
-
-                } else {
-                    mDatabase.child("Users").child(user).child("maritalstatus").setValue("married");
-
-                }
-                int smokerStat = smoker.getId();
-                if (smokerStat == -1) {
-                    mDatabase.child("Users").child(user).child("smoker").setValue("true");
-
-                } else {
-                    mDatabase.child("Users").child(user).child("smoker").setValue("false");
-
-                }
-                mDatabase.child("Users").child(user).child("optionalinsured").setValue(optionallyInsured.getText().toString());
-                mDatabase.child("Users").child(user).child("peoplecovered").setValue(peopleCovered.getText().toString());
-                mDatabase.child("Users").child(user).child("preexisting").setValue(conditionsList.toString());
                 break;
         }
         return view;
@@ -298,19 +294,60 @@ public class UserQuestions extends Activity implements VerticalStepperForm, mlRe
 
     @Override
     public void sendData() {
-        /*state;
-        //city;
-        age;
-        sex;
-        height;
-        weight;
-        income;
-        //employment;
-        maritialStatus;
-        smoker;
-        optionallyInsured;
-        peopleCovered;
-        conditionsList;*/
+
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        FirebaseAuth mAuth = FirebaseAuth.getInstance();
+        DatabaseReference mDatabase = database.getReference();
+        String user = mAuth.getCurrentUser().getUid();
+        mDatabase.child("Users").child(user).child("age").setValue(age.getText().toString());
+        mDatabase.child("Users").child(user).child("state").setValue(state.getSelectedItem().toString());
+        mDatabase.child("Users").child(user).child("city").setValue(city.getSelectedItem().toString());
+        RadioButton MaleradioButton = findViewById(R.id.maleRB);
+        if (MaleradioButton.isChecked())
+        {
+            mDatabase.child("Users").child(user).child("sex").setValue("M");
+
+        }
+        else {
+            mDatabase.child("Users").child(user).child("sex").setValue("F");
+
+        }
+        mDatabase.child("Users").child(user).child("height").setValue(height.getText().toString());
+        mDatabase.child("Users").child(user).child("weight").setValue(weight.getText().toString());
+        mDatabase.child("Users").child(user).child("income").setValue(income.getText().toString());
+        RadioButton employedRB = findViewById(R.id.employedRB);
+        if (employedRB.isChecked())
+        {
+            mDatabase.child("Users").child(user).child("employment").setValue("employed");
+
+        }
+        else
+        {
+            mDatabase.child("Users").child(user).child("employment").setValue("unemployed");
+        }
+        RadioButton maritalRB = findViewById(R.id.marriedRB);
+        if (maritalRB.isChecked())
+        {
+            mDatabase.child("Users").child(user).child("maritalstatus").setValue("married");
+        }
+        else {
+            mDatabase.child("Users").child(user).child("maritalstatus").setValue("single");
+        }
+
+        RadioButton smoker = findViewById(R.id.smokerRB);
+        if (smoker.isChecked())
+        {
+            mDatabase.child("Users").child(user).child("smoker").setValue("true");
+        }
+        else
+        {
+            mDatabase.child("Users").child(user).child("smoker").setValue("false");
+        }
+
+        mDatabase.child("Users").child(user).child("optionalinsured").setValue(optionallyInsured.getText().toString());
+        mDatabase.child("Users").child(user).child("peoplecovered").setValue(peopleCovered.getText().toString());
+        mDatabase.child("Users").child(user).child("preexisting").setValue(conditionsList.toString());
+
 
         int income = Integer.parseInt(this.income.getText().toString().replace("$", ""));
         int height = Integer.parseInt(this.height.getText().toString());
@@ -323,7 +360,6 @@ public class UserQuestions extends Activity implements VerticalStepperForm, mlRe
         int age = Integer.parseInt(this.age.getText().toString());
 
         RadioButton isMarried = findViewById(this.maritialStatus.getCheckedRadioButtonId());
-        RadioButton smoker = findViewById(this.smoker.getCheckedRadioButtonId());
         RadioButton gender = findViewById(this.sex.getCheckedRadioButtonId());
         String marital_status = String.valueOf(isMarried.getText().charAt(0));
         String tobacco = smoker.getText().toString();
@@ -375,8 +411,6 @@ public class UserQuestions extends Activity implements VerticalStepperForm, mlRe
             database = FirebaseDatabase.getInstance();
             mAuth = FirebaseAuth.getInstance();
             String thisUser = mAuth.getCurrentUser().getUid();
-            DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference().child("Users").child(thisUser);
-            dbRef.child("prediction").setValue(bronzePrem);
             FirebaseDatabase.getInstance().getReference().child("Users").child(thisUser).child("predicted").child("Bronze").setValue(bronzePrem);
             FirebaseDatabase.getInstance().getReference().child("Users").child(thisUser).child("predicted").child("Silver").setValue(silverPrem);
             FirebaseDatabase.getInstance().getReference().child("Users").child(thisUser).child("predicted").child("Gold").setValue(goldPrem);
@@ -395,9 +429,7 @@ public class UserQuestions extends Activity implements VerticalStepperForm, mlRe
         if (fromMain)
         {
             state = parentLayout.findViewById(R.id.personState);
-            String user = mAuth.getCurrentUser().getUid();
-            String someState =  mDatabase.child("Users").child(user).child("state").getKey();
-            state.setPrompt(someState);
+            state.setPrompt(stateInput);
             ((ViewGroup) state.getParent()).removeView(state);
             return state;
         }
@@ -412,9 +444,7 @@ public class UserQuestions extends Activity implements VerticalStepperForm, mlRe
         if (fromMain)
         {
             city = parentLayout.findViewById(R.id.personCity);
-            String user = mAuth.getCurrentUser().getUid();
-            String somecity =  mDatabase.child("Users").child(user).child("city").getKey();
-            city.setPrompt(somecity);
+            city.setPrompt(cityInput);
             ((ViewGroup) city.getParent()).removeView(city);
             return city;
         }
@@ -428,10 +458,7 @@ public class UserQuestions extends Activity implements VerticalStepperForm, mlRe
     private View createAgeStep() {
         if(fromMain) {
             age = parentLayout.findViewById(R.id.personAge);
-            String user = mAuth.getCurrentUser().getUid();
-            String someage =  mDatabase.child("Users").child(user).child("age").getKey();
-            age.setText(someage);
-            age.setText("1");///////////////////////////////////////////Todo
+            age.setText(ageInput.toString());
             ((ViewGroup) age.getParent()).removeView(age);
             age.addTextChangedListener(new TextWatcher() {
                 @Override
@@ -469,9 +496,8 @@ public class UserQuestions extends Activity implements VerticalStepperForm, mlRe
     private View createSexStep() {
         if (fromMain) {
             sex = parentLayout.findViewById(R.id.genderGroup);
-            String user = mAuth.getCurrentUser().getUid();
-            String somesex =  mDatabase.child("Users").child(user).child("sex").getKey();
-            if (somesex.equals("M"))
+
+            if (sexInput.equals("M"))
             {
                 RadioButton radioButton = parentLayout.findViewById(R.id.maleRB);
                 radioButton.setChecked(true);
@@ -509,10 +535,8 @@ public class UserQuestions extends Activity implements VerticalStepperForm, mlRe
         height = parentLayout.findViewById(R.id.personHeight);
         if (fromMain)
         {
-            String user = mAuth.getCurrentUser().getUid();
-            String someheight =  mDatabase.child("Users").child(user).child("height").getKey();
-            height.setText(someheight);
-            height.setText("23");/////////////////////////////////todo
+
+            height.setText(heightInput.toString());
         }
         ((ViewGroup) height.getParent()).removeView(height);
         height.addTextChangedListener(new TextWatcher() {
@@ -536,10 +560,8 @@ public class UserQuestions extends Activity implements VerticalStepperForm, mlRe
         weight = parentLayout.findViewById(R.id.personWeight);
         if (fromMain)
         {
-            String user = mAuth.getCurrentUser().getUid();
-            String someweight =  mDatabase.child("Users").child(user).child("weight").getKey();
-            weight.setText(someweight);
-            weight.setText("234");////////////////////////////////////////todo
+
+            weight.setText(weightInput.toString());
         }
         ((ViewGroup) weight.getParent()).removeView(weight);
         weight.addTextChangedListener(new TextWatcher() {
@@ -563,10 +585,8 @@ public class UserQuestions extends Activity implements VerticalStepperForm, mlRe
         income = parentLayout.findViewById(R.id.annualIncome);
         if (fromMain)
         {
-            String user = mAuth.getCurrentUser().getUid();
-            String someincome =  mDatabase.child("Users").child(user).child("income").getKey();
-            income.setText(someincome);
-            income.setText("123");//////////////////////////////todo
+
+            income.setText(incomeInput.toString());
         }
         ((ViewGroup) income.getParent()).removeView(income);
         income.addTextChangedListener(new TextWatcher() {
@@ -593,9 +613,8 @@ public class UserQuestions extends Activity implements VerticalStepperForm, mlRe
     private View createEmploymentStep() {
         employment = parentLayout.findViewById(R.id.employementGroup);
         if (fromMain) {
-            String user = mAuth.getCurrentUser().getUid();
-            String someemployment =  mDatabase.child("Users").child(user).child("employement").getKey();
-            if (someemployment.equals("employed"))
+
+            if (employmentInput.equals("employed"))
             {
                 RadioButton radioButton = parentLayout.findViewById(R.id.employedRB);
                 radioButton.setChecked(true);
@@ -620,9 +639,8 @@ public class UserQuestions extends Activity implements VerticalStepperForm, mlRe
     private View createMaritialStatusStep() {
         maritialStatus = parentLayout.findViewById(R.id.maritialGroup);
         if (fromMain) {
-            String user = mAuth.getCurrentUser().getUid();
-            String martialstat =  mDatabase.child("Users").child(user).child("maritalstatus").getKey();
-            if (martialstat.equals("single"))
+
+            if (maritalstatusInput.equals("single"))
             {
                 RadioButton radioButton = parentLayout.findViewById(R.id.singledRB);
                 radioButton.setChecked(true);
@@ -647,9 +665,8 @@ public class UserQuestions extends Activity implements VerticalStepperForm, mlRe
         smoker = parentLayout.findViewById(R.id.smokerGroup);
         if (fromMain)
         {
-            String user = mAuth.getCurrentUser().getUid();
-            String smoker1 =  mDatabase.child("Users").child(user).child("smoker").getKey();
-            if (smoker1.equals("true"))
+
+            if (smokerInput.equals("true"))
             {
                 RadioButton radioButton = parentLayout.findViewById(R.id.smokerRB);
                 radioButton.setChecked(true);
@@ -674,10 +691,8 @@ public class UserQuestions extends Activity implements VerticalStepperForm, mlRe
         optionallyInsured = parentLayout.findViewById(R.id.optionallyInsured);
         if (fromMain)
         {
-            String user = mAuth.getCurrentUser().getUid();
-            String optional =  mDatabase.child("Users").child(user).child("optionalinsured").getKey();
-            optionallyInsured.setText(optional);
-            optionallyInsured.setText("235");/////////////////////////////////todo
+
+            optionallyInsured.setText(optionalinsuredInput.toString());
         }
         ((ViewGroup) optionallyInsured.getParent()).removeView(optionallyInsured);
         optionallyInsured.addTextChangedListener(new TextWatcher() {
@@ -705,10 +720,8 @@ public class UserQuestions extends Activity implements VerticalStepperForm, mlRe
         peopleCovered = parentLayout.findViewById(R.id.peopleCovered);
         if (fromMain)
         {
-            String user = mAuth.getCurrentUser().getUid();
-            String peopleCov =  mDatabase.child("Users").child(user).child("peoplecovered").getKey();
-            peopleCovered.setText(peopleCov);
-            peopleCovered.setText("3");//////////////////////////////////////todo
+
+            peopleCovered.setText(peoplecoveredInput.toString());
         }
         ((ViewGroup) peopleCovered.getParent()).removeView(peopleCovered);
         peopleCovered.addTextChangedListener(new TextWatcher() {
